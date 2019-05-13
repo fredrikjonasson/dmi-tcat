@@ -215,7 +215,6 @@ if (defined('ANALYSIS_URL'))
                         }
                     }
                     ksort($ordered_datasets);
-
                     $count = 0;
                     foreach ($ordered_datasets as $groupname => $group) {
 
@@ -224,16 +223,23 @@ if (defined('ANALYSIS_URL'))
                         foreach ($group as $key => $set) {
 
                             $v = ($key == $dataset) ? 'selected="selected"' : "";
-
+							
+							if ($set["pseudonymization"] == 1)
+							{
+							echo '<option value="' . $key . '" ' . $v . '>' . $set["bin"] . ' --- ' . number_format($set["notweets"], 0, ",", ".") . ' pseudonymized tweets from ' . $set['mintime'] . ' to ' . $set['maxtime'] . '</option>';
+							
+							}else {
                             echo '<option value="' . $key . '" ' . $v . '>' . $set["bin"] . ' --- ' . number_format($set["notweets"], 0, ",", ".") . ' tweets from ' . $set['mintime'] . ' to ' . $set['maxtime'] . '</option>';
+                            }
                             $count += $set['notweets'];
-                        }
+							}
 
                         echo '</optgroup>';
                     }
 
                     echo "</select> ";
 
+				
                     print "<table style='float:right'><tr><td>" . number_format($count, 0, ",", ".") . " tweets archived so far (and counting)</td></tr></table>";
                     ?>
 

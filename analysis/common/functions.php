@@ -975,7 +975,7 @@ function get_hash_tags($msg) {
 function get_all_datasets() {
     global $dataset;
     $dbh = pdo_connect();
-    $rec = $dbh->prepare("SELECT id, querybin, type, active, comments FROM tcat_query_bins WHERE access = " . TCAT_QUERYBIN_ACCESS_OK . " OR access = " . TCAT_QUERYBIN_ACCESS_READONLY . " ORDER BY LOWER(querybin)");
+    $rec = $dbh->prepare("SELECT id, querybin, type, active, comments, pseudonymization FROM tcat_query_bins WHERE access = " . TCAT_QUERYBIN_ACCESS_OK . " OR access = " . TCAT_QUERYBIN_ACCESS_READONLY . " ORDER BY LOWER(querybin)");
     $datasets = array();
     try {
         if ($rec->execute() && $rec->rowCount() > 0) {
@@ -985,6 +985,7 @@ function get_all_datasets() {
                 $row['type'] = $res['type'];
                 $row['active'] = $res['active'];
                 $row['comments'] = $res['comments'];
+                $row['pseudonymization'] = $res['pseudonymization'];
                 $rec2 = $dbh->prepare("SELECT count(t.id) AS notweets, MAX(t.created_at) AS max  FROM " . $res['querybin'] . "_tweets t ");
                 if ($rec2->execute() && $rec2->rowCount() > 0) {
                     $res2 = $rec2->fetch();
