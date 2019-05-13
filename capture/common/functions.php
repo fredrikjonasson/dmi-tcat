@@ -308,6 +308,7 @@ function create_admin() {
     `active` BOOLEAN NOT NULL,
     `access` INT DEFAULT 0,
     `comments` VARCHAR(2048) DEFAULT NULL,
+    `pseudonymization` tinyint(1) DEFAULT 0,
     PRIMARY KEY (`id`),
     KEY `querybin` (`querybin`),
     KEY `type` (`type`),

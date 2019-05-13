@@ -68,13 +68,18 @@ function create_new_bin($params) {
             return;
         }
     }
-
+    // Check and set the pseudonymization field in the tcat_query_bins table.
+    $pseudo = 0;
+    if ($params['pseudonymization']=="1") {
+        $pseudo=1;
+    }
     // populate tcat_query_bin table
-    $sql = "INSERT INTO tcat_query_bins (querybin,type,active,comments) VALUES (:querybin, :type, '1', :comments);";
+    $sql = "INSERT INTO tcat_query_bins (querybin,type,active,comments, pseudonymization) VALUES (:querybin, :type, '1', :comments, :pseudonymization);";
     $insert_querybin = $dbh->prepare($sql);
     $insert_querybin->bindParam(':querybin', $bin_name, PDO::PARAM_STR);
     $insert_querybin->bindParam(':type', $type, PDO::PARAM_STR);
     $insert_querybin->bindParam(':comments', $comments, PDO::PARAM_STR);
+    $insert_querybin->bindParam(':pseudonymization', $pseudo, PDO::PARAM_STR);
     $insert_querybin->execute();
     $lastbinid = $dbh->lastInsertId();
 

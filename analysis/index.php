@@ -84,6 +84,7 @@ if (defined('ANALYSIS_URL'))
                 }
             });
     }
+
     function saveSvg(id){
         $("svg").attr({ version: '1.1' , xmlns:"http://www.w3.org/2000/svg"});
         var e = document.getElementById(id);
@@ -186,6 +187,7 @@ if (defined('ANALYSIS_URL'))
                 <form action="index.php" method="get" id="form">
 
                     <?php
+
                     echo '<select id="ipt_dataset" name="dataset">';
 
                     $ordered_datasets = array();

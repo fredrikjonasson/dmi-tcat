@@ -203,6 +203,12 @@ $lastRateLimitHit = getLastRateLimitHit();
                                 <input id="newbin_name" name="newbin_name" type="text" maxlength="45"/>
                             </div>
                         </div>
+                        <div class="if_row">
+                            <div class='if_row_header'>Pseudonymize?</div>
+                            <div class='if_row_content'>
+                                <input id="pseudonymization" type="checkbox" />
+                            </div>
+                        </div>
 <?php if (array_search('track', $captureroles) !== false) { ?>
                             <div id="if_row_phrases" class="if_row">
                                 <script>
@@ -629,6 +635,10 @@ foreach ($bins as $id => $bin)
             return false;
         var _bin = $("#newbin_name").val();
         _bin = _bin.replace(/ /g,"_");
+        var _pseudonymize = "0";
+        if (document.getElementById("pseudonymization").checked) {
+            _pseudonymize = "1";
+        }
         if(!validateBin(_bin))
             return false;
         var _comments = $("textarea[name=newbin_comments]").val();
@@ -667,13 +677,13 @@ foreach ($bins as $id => $bin)
 
         if(_check == true) {
             if(_type == "track")    
-                var _params = {action:"newbin",type:_type,newbin_phrases:_phrases,newbin_name:_bin,newbin_comments:_comments,active:$("#make_active").val()};
+                var _params = {action:"newbin",type:_type, pseudonymization: _pseudonymize, newbin_phrases:_phrases,newbin_name:_bin,newbin_comments:_comments,active:$("#make_active").val()};
             if(_type == "geotrack")    
-                var _params = {action:"newbin",type:_type,newbin_phrases:_phrases,newbin_name:_bin,newbin_comments:_comments,active:$("#make_active").val()};
+                var _params = {action:"newbin",type:_type, pseudonymization: _pseudonymize, newbin_phrases:_phrases,newbin_name:_bin,newbin_comments:_comments,active:$("#make_active").val()};
             if(_type == "follow")    
-                var _params = {action:"newbin",type:_type,newbin_users:_users,newbin_name:_bin,newbin_comments:_comments,active:$("#make_active").val()};
+                var _params = {action:"newbin",type:_type ,pseudonymization: _pseudonymize, newbin_users:_users,newbin_name:_bin,newbin_comments:_comments,active:$("#make_active").val()};
             if(_type == "onepercent")    
-                var _params = {action:"newbin",type:_type,newbin_name:_bin,newbin_comments:_comments,active:$("#make_active").val()};
+                var _params = {action:"newbin",type:_type, pseudonymization: _pseudonymize ,newbin_name:_bin,newbin_comments:_comments,active:$("#make_active").val()};
 
 
             $.ajax({

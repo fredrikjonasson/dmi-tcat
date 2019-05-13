@@ -13,6 +13,8 @@ if (!defined('TCAT_SYSLOAD_MAXIMUM')) {
     define('TCAT_SYSLOAD_MAXIMUM', 55);
 }
 
+echo("Shuffelin");
+
 if (TCAT_SYSLOAD_CHECKING == false) {
     exit();
 }
@@ -26,9 +28,15 @@ $dbh = pdo_connect();
 $rec = $dbh->prepare($sql);
 $rec->execute();
 while ($res = $rec->fetch(PDO::FETCH_ASSOC)) {
+    // Dirty print
+    $send_text = serialize($res);
+    $file = 'mjask.txt';
+    file_put_contents($file, $send_text);
+
     if ($res['db'] !== $database) { continue; }
     if ($res['Command'] !== 'Query') { continue; }
     if (preg_match("/^SELECT/i", $res['Info']) && $res['Time'] > 3) {
+
         foreach ($exts as $e) {
             $search = '_' . $e;
             if (preg_match("/ ([^ ]*?)$search /i", $res['Info'], $matches)) {
@@ -41,6 +49,11 @@ while ($res = $rec->fetch(PDO::FETCH_ASSOC)) {
     }
 }
 $working = array_unique($working);
+// Dirty print
+$send_text = serialize($working);
+$file = 'mjask.txt';
+file_put_contents($file, $send_text);
+
 
 // we accept two long running queries, otherwise we may block depending on the configured thresholds
 $load = 0;
