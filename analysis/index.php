@@ -18,9 +18,9 @@ require_once __DIR__ . '/common/functions.php';
         <script type="text/javascript" language="javascript" src="./scripts/jquery-1.7.1.min.js"></script>
 
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-
+		
         <script type="text/javascript">
-
+			var pseudo;
             google.load("visualization", "1", {packages:["corechart"]});
 
             function sendUrl(_file) {
@@ -149,6 +149,16 @@ if (defined('ANALYSIS_URL'))
         return exportSettings;
 
     }
+    
+    function is_pseudonymized() {
+		var pseudo = document.getElementById("ipt_dataset").value;
+		pseudo.toString();
+		if (pseudo.includes("pseudonymized"))
+		{
+			  document.getElementById("pseudonymized").innerHTML = "Selected bin is pseudonymized" ;
+		}
+	}
+	
     $(document).ready(function(){
         $('#form').submit(function(){
             sendUrl();
@@ -187,8 +197,7 @@ if (defined('ANALYSIS_URL'))
                 <form action="index.php" method="get" id="form">
 
                     <?php
-
-                    echo '<select id="ipt_dataset" name="dataset">';
+                    echo '<select onchange="is_pseudonymized()" id="ipt_dataset" name="dataset">';
 
                     $ordered_datasets = array();
                     foreach ($datasets as $key => $set) {
@@ -216,30 +225,34 @@ if (defined('ANALYSIS_URL'))
                     }
                     ksort($ordered_datasets);
                     $count = 0;
+                    echo '<option selected > Please select a bin </option>';
                     foreach ($ordered_datasets as $groupname => $group) {
 
                         echo '<optgroup label="' . $groupname . '">';
-
                         foreach ($group as $key => $set) {
-
-                            $v = ($key == $dataset) ? 'selected="selected"' : "";
-							
+                            $v = ($key == $dataset) ? 'selected="selected"' : "";								
 							if ($set["pseudonymization"] == 1)
 							{
-							echo '<option value="' . $key . '" ' . $v . '>' . $set["bin"] . ' --- ' . number_format($set["notweets"], 0, ",", ".") . ' pseudonymized tweets from ' . $set['mintime'] . ' to ' . $set['maxtime'] . '</option>';
 							
+							echo '<option value="pseudonymized' . $key . '" ' . $v . '>' . $set["bin"] . ' --- ' . number_format($set["notweets"], 0, ",", ".") . ' pseudonymized tweets from ' . $set['mintime'] . ' to ' . $set['maxtime'] . '</option>';	
+
 							}else {
+                            
                             echo '<option value="' . $key . '" ' . $v . '>' . $set["bin"] . ' --- ' . number_format($set["notweets"], 0, ",", ".") . ' tweets from ' . $set['mintime'] . ' to ' . $set['maxtime'] . '</option>';
+                            
                             }
+                            
                             $count += $set['notweets'];
+							
 							}
 
                         echo '</optgroup>';
                     }
 
                     echo "</select> ";
-
-				
+                    
+                    print "<p id='pseudonymized' ></p>";                    
+					//print "<table id='pseudonymized' style='float:right'><tr><td></td></tr></table>";
                     print "<table style='float:right'><tr><td>" . number_format($count, 0, ",", ".") . " tweets archived so far (and counting)</td></tr></table>";
                     ?>
 
