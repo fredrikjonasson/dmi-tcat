@@ -1,4 +1,7 @@
 <?php
+include 'ChromePhp.php';
+
+
 
 require_once __DIR__ . '/../../common/functions.php';   // include common functions file
 
@@ -96,7 +99,6 @@ if (isset($_GET['from_user_lang']) && !empty($_GET['from_user_lang']))
     $from_user_lang = trim($_GET['from_user_lang']);
 else
     $from_user_lang = "";
-
 if (isset($_GET['lang']) && !empty($_GET['lang']))
     $lang = trim($_GET['lang']);
 else
@@ -240,6 +242,7 @@ function sqlSubset($where = NULL) {
     $sql = "";
     if (!empty($esc['mysql']['url_query']) && strstr($where, "u.") == false)
         $sql .= " INNER JOIN " . $esc['mysql']['dataset'] . "_urls u ON u.tweet_id = t.id ";
+	
     if (!empty($esc['mysql']['media_url_query']) && strstr($where, "med.") == false)
         $sql .= " INNER JOIN " . $esc['mysql']['dataset'] . "_media med ON med.tweet_id = t.id ";
     $sql .= " WHERE ";

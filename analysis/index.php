@@ -20,8 +20,8 @@ require_once __DIR__ . '/common/functions.php';
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 		
         <script type="text/javascript">
-			var pseudo;
             google.load("visualization", "1", {packages:["corechart"]});
+			var pseudonymized = 0;
 
             function sendUrl(_file) {
                 var _d1 = $("#ipt_startdate").val();
@@ -42,7 +42,7 @@ require_once __DIR__ . '/common/functions.php';
 if (defined('ANALYSIS_URL'))
     print '"' . ANALYSIS_URL . '"';
 ?>
-            + _file +
+            + _file + 
             "?dataset=" + $("#ipt_dataset").val() +
             "&query=" + $("#ipt_query").val().replace(/#/g,"%23") +
             "&url_query=" + $("#ipt_url_query").val().replace(/#/g,"%23") +
@@ -62,7 +62,6 @@ if (defined('ANALYSIS_URL'))
             "&whattodo=" + $("#whattodo").val() +
             "&graph_resolution=" + $("input[name=graph_resolution]:checked").val() +
             "&outputformat=" + outputformat;
-
         /* verify server load */
         $.ajax({
             url: "ajax.serverload.php",
@@ -154,8 +153,12 @@ if (defined('ANALYSIS_URL'))
 		var pseudo = document.getElementById("ipt_dataset").value;
 		pseudo.toString();
 		if (pseudo.includes("pseudonymized"))
+		{		
+			pseudonymized = "1";
+			document.getElementById("pseudonymized").innerHTML = "Selected bin is pseudonymized" ;
+		} else
 		{
-			  document.getElementById("pseudonymized").innerHTML = "Selected bin is pseudonymized" ;
+			pseudonymized = "0";
 		}
 	}
 	
@@ -225,7 +228,7 @@ if (defined('ANALYSIS_URL'))
                     }
                     ksort($ordered_datasets);
                     $count = 0;
-                    echo '<option selected > Please select a bin </option>';
+                    //echo '<option selected > Please select a bin </option>';
                     foreach ($ordered_datasets as $groupname => $group) {
 
                         echo '<optgroup label="' . $groupname . '">';
@@ -252,7 +255,6 @@ if (defined('ANALYSIS_URL'))
                     echo "</select> ";
                     
                     print "<p id='pseudonymized' ></p>";                    
-					//print "<table id='pseudonymized' style='float:right'><tr><td></td></tr></table>";
                     print "<table style='float:right'><tr><td>" . number_format($count, 0, ",", ".") . " tweets archived so far (and counting)</td></tr></table>";
                     ?>
 
