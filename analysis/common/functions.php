@@ -1,12 +1,7 @@
 <?php
-include 'ChromePhp.php';
-
-
-
 require_once __DIR__ . '/../../common/functions.php';   // include common functions file
 
 $connection = false;
-
 // PHP7
 //db_connect($hostname, $dbuser, $dbpass, $database);
 $dbh = pdo_connect();
@@ -176,7 +171,11 @@ $titles = array(
     "source" => "source frequency"
 );
 
-
+	// @print
+	$send_text = "before_functions";//serialize($sql);
+	$file = 'before_functions.txt';
+	file_put_contents($file, $send_text);
+	
 if (!empty($whattodo)) {
     if (in_array($whattodo, $tsv) !== false)
         get_file($whattodo);
@@ -185,7 +184,12 @@ if (!empty($whattodo)) {
 // return the desired file
 function get_file($what) {
     validate_all_variables();
-
+	
+	// @print
+	$send_text = "inside_get_file())";//serialize($what);
+	$file = 'get_file.txt';
+	file_put_contents($file, $send_text);
+	
     // get filename (this also validates the data)
     global $database;
     $filename = get_filename_for_export($what);
@@ -237,15 +241,48 @@ function frequencyTable($table, $toget) {
 // here further sqlSubset selection is constructed
 function sqlSubset($where = NULL) {
     error_reporting(E_ALL);
+    
+    // @print
+	$send_text = "in i subsetet";
+	$file = 'subsetet.txt';
+	file_put_contents($file, $send_text);
+	
     global $esc;
     $collation = current_collation();
+    
+    // @print
+	$send_text = serialize($esc);
+	$file = 'dollar_esc.txt';
+	file_put_contents($file, $send_text);
+	
+	// @print
+	$send_text = serialize($collation);
+	$file = 'dollar_collation.txt';
+	file_put_contents($file, $send_text);
+	
+	// @print
+	$send_text = "efter prints";
+	$file = 'efter_prints.txt';
+	file_put_contents($file, $send_text);
+	
     $sql = "";
     if (!empty($esc['mysql']['url_query']) && strstr($where, "u.") == false)
         $sql .= " INNER JOIN " . $esc['mysql']['dataset'] . "_urls u ON u.tweet_id = t.id ";
-	
+        
+        // @print
+        $send_text = serialize($sql);
+		$file = 'plask.txt';
+		file_put_contents($file, $send_text);
+		
     if (!empty($esc['mysql']['media_url_query']) && strstr($where, "med.") == false)
         $sql .= " INNER JOIN " . $esc['mysql']['dataset'] . "_media med ON med.tweet_id = t.id ";
-    $sql .= " WHERE ";
+		$sql .= " WHERE ";
+		
+		// @print
+		$send_text = serialize($sql);
+		$file = 'plask.txt';
+		file_put_contents($file, $send_text);
+				
     if (!empty($where))
         $sql .= $where;
     if (!empty($esc['mysql']['from_user_name'])) {
@@ -253,16 +290,34 @@ function sqlSubset($where = NULL) {
             $subqueries = explode(" AND ", $esc['mysql']['from_user_name']);
             foreach ($subqueries as $subquery) {
                 $sql .= "LOWER(t.from_user_name COLLATE $collation) = LOWER('" . $subquery . "' COLLATE $collation) AND ";
+				
+				// @print
+				$send_text = serialize($sql);
+				$file = 'plask.txt';
+				file_put_contents($file, $send_text);
+
             }
         } elseif (strstr($esc['mysql']['from_user_name'], "OR") !== false) {
             $subqueries = explode(" OR ", $esc['mysql']['from_user_name']);
             $sql .= "(";
             foreach ($subqueries as $subquery) {
                 $sql .= "LOWER(t.from_user_name COLLATE $collation) = LOWER('" . $subquery . "' COLLATE $collation) OR ";
+				
+				// @print
+				$send_text = serialize($sql);
+				$file = 'plask.txt';
+				file_put_contents($file, $send_text);
+				
             }
             $sql = substr($sql, 0, -3) . ") AND ";
         } else {
             $sql .= "LOWER(t.from_user_name COLLATE $collation) = LOWER('" . $esc['mysql']['from_user_name'] . "' COLLATE $collation) AND ";
+				
+				// @print
+            	$send_text = serialize($sql);
+				$file = 'plask.txt';
+				file_put_contents($file, $send_text);
+				
         }
     }
     if (!empty($esc['mysql']['exclude_from_user_name'])) {
@@ -510,6 +565,11 @@ function generate($what, $filename) {
     global $tsv, $network, $esc, $titles, $database, $interval, $outputformat;
     $dbh = pdo_connect();
 
+	// @print
+	$send_text = "generate";
+	$file = 'generated_entry.txt';
+	file_put_contents($file, $send_text);
+
     require_once __DIR__ . '/CSV.class.php';
 
     // initialize variables
@@ -519,6 +579,12 @@ function generate($what, $filename) {
 
     // determine interval
     $sql = "SELECT MIN(t.created_at) AS min, MAX(t.created_at) AS max FROM " . $esc['mysql']['dataset'] . "_tweets t ";
+    
+    // @print
+	$send_text = serialize($sql);
+	$file = 'generated_sql.txt';
+	file_put_contents($file, $send_text);
+    
     $sql .= sqlSubset();
     //print $sql . "<bR>";
     $rec = $dbh->prepare($sql);
@@ -866,6 +932,12 @@ function current_collation() {
     $collation = 'utf8_bin';
     $is_utf8mb4 = false;
     $sql = "SHOW FULL COLUMNS FROM " . $esc['mysql']['dataset'] . "_hashtags";
+    
+    // @print
+	$send_text = serialize($sql);
+	$file = 'current_coll.txt';
+	file_put_contents($file, $send_text);
+    
     $rec = $dbh->prepare($sql);
     $rec->execute();
     while ($res = $rec->fetch(PDO::FETCH_ASSOC)) {

@@ -1,10 +1,15 @@
 <?php
 require_once __DIR__ . '/common/config.php';
-require_once __DIR__ . '/common/functions.php';
+//require_once __DIR__ . '/common/functions.php';
 require_once __DIR__ . '/common/CSV.class.php';
+require_once __DIR__ . '/common/CSV.class.php';
+require_once __DIR__ . '/common/pseudonymization.php';
 
         validate_all_variables();
         dataset_must_exist();
+        
+        is_pseudonymized();
+        
         $dbh = pdo_connect();
 //        pdo_unbuffered($dbh);
 
@@ -23,6 +28,7 @@ require_once __DIR__ . '/common/CSV.class.php';
         $stream_to_open = export_start($filename, $outputformat);
 
         $csv = new CSV($stream_to_open, $outputformat);
+
 
         // write header
         $header = "id,time,created_at,from_user_name,text,filter_level,possibly_sensitive,withheld_copyright,withheld_scope,truncated,retweet_count,favorite_count,lang,to_user_name,in_reply_to_status_id,quoted_status_id,source,location,lat,lng,from_user_id,from_user_realname,from_user_verified,from_user_description,from_user_url,from_user_profile_image_url,from_user_utcoffset,from_user_timezone,from_user_lang,from_user_tweetcount,from_user_followercount,from_user_friendcount,from_user_favourites_count,from_user_listed,from_user_withheld_scope,from_user_created_at";
