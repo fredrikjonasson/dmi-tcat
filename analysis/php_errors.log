@@ -238,3 +238,68 @@ Stack trace:
 [15-May-2019 19:29:57 UTC] PHP Fatal error:  require_once(): Failed opening required '/var/www/dmi-tcat/analysis/common/pseudonymize.php' (include_path='.:/usr/share/php') in /var/www/dmi-tcat/analysis/mod.export_tweets.php on line 5
 [15-May-2019 19:29:58 UTC] PHP Warning:  require_once(/var/www/dmi-tcat/analysis/common/pseudonymize.php): failed to open stream: No such file or directory in /var/www/dmi-tcat/analysis/mod.export_tweets.php on line 5
 [15-May-2019 19:29:58 UTC] PHP Fatal error:  require_once(): Failed opening required '/var/www/dmi-tcat/analysis/common/pseudonymize.php' (include_path='.:/usr/share/php') in /var/www/dmi-tcat/analysis/mod.export_tweets.php on line 5
+[15-May-2019 19:39:44 UTC] PHP Notice:  Undefined variable: t in /var/www/dmi-tcat/analysis/common/functions.php on line 245
+[15-May-2019 19:39:44 UTC] PHP Warning:  file_put_contents(sqlsubset.txt): failed to open stream: Permission denied in /var/www/dmi-tcat/analysis/common/functions.php on line 247
+[15-May-2019 19:39:44 UTC] PHP Notice:  Undefined variable: t in /var/www/dmi-tcat/analysis/common/functions.php on line 245
+[15-May-2019 19:39:44 UTC] PHP Warning:  file_put_contents(sqlsubset.txt): failed to open stream: Permission denied in /var/www/dmi-tcat/analysis/common/functions.php on line 247
+[15-May-2019 19:39:44 UTC] PHP Notice:  Undefined variable: t in /var/www/dmi-tcat/analysis/common/functions.php on line 245
+[15-May-2019 19:39:44 UTC] PHP Warning:  file_put_contents(sqlsubset.txt): failed to open stream: Permission denied in /var/www/dmi-tcat/analysis/common/functions.php on line 247
+[15-May-2019 19:39:44 UTC] PHP Notice:  Undefined variable: t in /var/www/dmi-tcat/analysis/common/functions.php on line 245
+[15-May-2019 19:39:44 UTC] PHP Warning:  file_put_contents(sqlsubset.txt): failed to open stream: Permission denied in /var/www/dmi-tcat/analysis/common/functions.php on line 247
+[15-May-2019 19:39:44 UTC] PHP Notice:  Undefined variable: t in /var/www/dmi-tcat/analysis/common/functions.php on line 245
+[15-May-2019 19:39:44 UTC] PHP Warning:  file_put_contents(sqlsubset.txt): failed to open stream: Permission denied in /var/www/dmi-tcat/analysis/common/functions.php on line 247
+[15-May-2019 19:39:52 UTC] PHP Notice:  Undefined variable: dataset in /var/www/dmi-tcat/analysis/common/pseudonymization.php on line 6
+[15-May-2019 19:39:52 UTC] PHP Notice:  Undefined variable: t in /var/www/dmi-tcat/analysis/common/functions.php on line 245
+[15-May-2019 19:39:52 UTC] PHP Warning:  file_put_contents(sqlsubset.txt): failed to open stream: Permission denied in /var/www/dmi-tcat/analysis/common/functions.php on line 247
+[15-May-2019 19:41:29 UTC] PHP Notice:  Undefined variable: t in /var/www/dmi-tcat/analysis/common/functions.php on line 245
+[15-May-2019 19:41:29 UTC] PHP Warning:  file_put_contents(sqlsubset.txt): failed to open stream: Permission denied in /var/www/dmi-tcat/analysis/common/functions.php on line 247
+[15-May-2019 19:41:29 UTC] PHP Notice:  Undefined variable: t in /var/www/dmi-tcat/analysis/common/functions.php on line 245
+[15-May-2019 19:41:29 UTC] PHP Warning:  file_put_contents(sqlsubset.txt): failed to open stream: Permission denied in /var/www/dmi-tcat/analysis/common/functions.php on line 247
+[15-May-2019 19:41:29 UTC] PHP Notice:  Undefined variable: t in /var/www/dmi-tcat/analysis/common/functions.php on line 245
+[15-May-2019 19:41:29 UTC] PHP Warning:  file_put_contents(sqlsubset.txt): failed to open stream: Permission denied in /var/www/dmi-tcat/analysis/common/functions.php on line 247
+[15-May-2019 19:41:29 UTC] PHP Notice:  Undefined variable: t in /var/www/dmi-tcat/analysis/common/functions.php on line 245
+[15-May-2019 19:41:29 UTC] PHP Warning:  file_put_contents(sqlsubset.txt): failed to open stream: Permission denied in /var/www/dmi-tcat/analysis/common/functions.php on line 247
+[15-May-2019 19:41:29 UTC] PHP Notice:  Undefined variable: t in /var/www/dmi-tcat/analysis/common/functions.php on line 245
+[15-May-2019 19:41:29 UTC] PHP Warning:  file_put_contents(sqlsubset.txt): failed to open stream: Permission denied in /var/www/dmi-tcat/analysis/common/functions.php on line 247
+[15-May-2019 19:57:59 UTC] PHP Notice:  Undefined variable: t in /var/www/dmi-tcat/analysis/common/functions.php on line 245
+[15-May-2019 19:57:59 UTC] PHP Warning:  file_put_contents(sqlsubset.txt): failed to open stream: Permission denied in /var/www/dmi-tcat/analysis/common/functions.php on line 247
+[15-May-2019 19:57:59 UTC] PHP Notice:  Undefined variable: t in /var/www/dmi-tcat/analysis/common/functions.php on line 245
+[15-May-2019 19:57:59 UTC] PHP Warning:  file_put_contents(sqlsubset.txt): failed to open stream: Permission denied in /var/www/dmi-tcat/analysis/common/functions.php on line 247
+[15-May-2019 19:57:59 UTC] PHP Notice:  Undefined variable: t in /var/www/dmi-tcat/analysis/common/functions.php on line 245
+[15-May-2019 19:57:59 UTC] PHP Warning:  file_put_contents(sqlsubset.txt): failed to open stream: Permission denied in /var/www/dmi-tcat/analysis/common/functions.php on line 247
+[15-May-2019 19:57:59 UTC] PHP Notice:  Undefined variable: t in /var/www/dmi-tcat/analysis/common/functions.php on line 245
+[15-May-2019 19:57:59 UTC] PHP Warning:  file_put_contents(sqlsubset.txt): failed to open stream: Permission denied in /var/www/dmi-tcat/analysis/common/functions.php on line 247
+[15-May-2019 19:57:59 UTC] PHP Notice:  Undefined variable: t in /var/www/dmi-tcat/analysis/common/functions.php on line 245
+[15-May-2019 19:57:59 UTC] PHP Warning:  file_put_contents(sqlsubset.txt): failed to open stream: Permission denied in /var/www/dmi-tcat/analysis/common/functions.php on line 247
+[15-May-2019 20:00:15 UTC] PHP Notice:  Undefined variable: dataset in /var/www/dmi-tcat/analysis/common/pseudonymization.php on line 7
+[15-May-2019 20:00:15 UTC] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '' at line 1 in /var/www/dmi-tcat/analysis/common/pseudonymization.php:9
+Stack trace:
+#0 /var/www/dmi-tcat/analysis/common/pseudonymization.php(9): PDOStatement->execute()
+#1 /var/www/dmi-tcat/analysis/mod.export_tweets.php(11): is_pseudonymized()
+#2 {main}
+  thrown in /var/www/dmi-tcat/analysis/common/pseudonymization.php on line 9
+[15-May-2019 20:02:47 UTC] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'frfawfae' in 'where clause' in /var/www/dmi-tcat/analysis/common/pseudonymization.php:9
+Stack trace:
+#0 /var/www/dmi-tcat/analysis/common/pseudonymization.php(9): PDOStatement->execute()
+#1 /var/www/dmi-tcat/analysis/mod.export_tweets.php(11): is_pseudonymized('frfawfae')
+#2 {main}
+  thrown in /var/www/dmi-tcat/analysis/common/pseudonymization.php on line 9
+[15-May-2019 20:04:39 UTC] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'frfawfae' in 'where clause' in /var/www/dmi-tcat/analysis/common/pseudonymization.php:9
+Stack trace:
+#0 /var/www/dmi-tcat/analysis/common/pseudonymization.php(9): PDOStatement->execute()
+#1 /var/www/dmi-tcat/analysis/mod.export_tweets.php(11): is_pseudonymized('frfawfae')
+#2 {main}
+  thrown in /var/www/dmi-tcat/analysis/common/pseudonymization.php on line 9
+[15-May-2019 20:04:40 UTC] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'frfawfae' in 'where clause' in /var/www/dmi-tcat/analysis/common/pseudonymization.php:9
+Stack trace:
+#0 /var/www/dmi-tcat/analysis/common/pseudonymization.php(9): PDOStatement->execute()
+#1 /var/www/dmi-tcat/analysis/mod.export_tweets.php(11): is_pseudonymized('frfawfae')
+#2 {main}
+  thrown in /var/www/dmi-tcat/analysis/common/pseudonymization.php on line 9
+[15-May-2019 20:16:10 UTC] PHP Fatal error:  Uncaught PDOException: You cannot serialize or unserialize PDOStatement instances in /var/www/dmi-tcat/analysis/common/pseudonymization.php:12
+Stack trace:
+#0 [internal function]: PDOStatement->__sleep()
+#1 /var/www/dmi-tcat/analysis/common/pseudonymization.php(12): serialize(Object(PDOStatement))
+#2 /var/www/dmi-tcat/analysis/mod.export_tweets.php(11): is_pseudonymized('frfawfae')
+#3 {main}
+  thrown in /var/www/dmi-tcat/analysis/common/pseudonymization.php on line 12

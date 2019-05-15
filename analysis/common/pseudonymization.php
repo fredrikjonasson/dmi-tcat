@@ -1,8 +1,15 @@
 <?php
 require __DIR__ . '/functions.php';
 
-
-function is_pseudonymized() {
-	$sql = "SELECT pseudonymization FROM tcat_query_bins WHERE querybin =".$dataset;
-	var_dump(serialize($sql));	
+// The function queries the database to determine however the chosen dataset is flagged for pseudonymization or not.
+function is_pseudonymized($dataset) {
+	
+	$dbh = pdo_connect();
+	$sql = "SELECT pseudonymization FROM tcat_query_bins WHERE querybin ='".$dataset."';";
+	$rec = $dbh->prepare($sql);
+    $rec->execute();
+	$boolindicator = $rec -> fetch(PDO::FETCH_NUM);	
+	$dbh = NULL;
+        
+	return $boolindicator;
 	}

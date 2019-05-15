@@ -8,10 +8,13 @@ require_once __DIR__ . '/common/pseudonymization.php';
         validate_all_variables();
         dataset_must_exist();
         
-        is_pseudonymized();
+//        if ((is_pseudonymized($esc['mysql']['dataset'])) == 1 )
+//		{
+//			pseudonymize();_
+//		}
         
         $dbh = pdo_connect();
-//        pdo_unbuffered($dbh);
+		// pdo_unbuffered($dbh);
 
         // make filename and open file for write
         $module = "fullExport";

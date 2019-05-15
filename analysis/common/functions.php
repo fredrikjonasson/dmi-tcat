@@ -240,54 +240,19 @@ function frequencyTable($table, $toget) {
 
 // here further sqlSubset selection is constructed
 function sqlSubset($where = NULL) {
-	
-	// Dirty
-	$send_text = serialize($t);
-	$file = 'sqlsubset.txt';
-	file_put_contents($file, $send_text);
-    
+
     error_reporting(E_ALL);
-    
-    // @print
-	$send_text = "in i subsetet";
-	$file = 'subsetet.txt';
-	file_put_contents($file, $send_text);
 	
     global $esc;
     $collation = current_collation();
-    
-    // @print
-	$send_text = serialize($esc);
-	$file = 'dollar_esc.txt';
-	file_put_contents($file, $send_text);
-	
-	// @print
-	$send_text = serialize($collation);
-	$file = 'dollar_collation.txt';
-	file_put_contents($file, $send_text);
-	
-	// @print
-	$send_text = "efter prints";
-	$file = 'efter_prints.txt';
-	file_put_contents($file, $send_text);
 	
     $sql = "";
     if (!empty($esc['mysql']['url_query']) && strstr($where, "u.") == false)
         $sql .= " INNER JOIN " . $esc['mysql']['dataset'] . "_urls u ON u.tweet_id = t.id ";
-        
-        // @print
-        $send_text = serialize($sql);
-		$file = 'plask.txt';
-		file_put_contents($file, $send_text);
 		
     if (!empty($esc['mysql']['media_url_query']) && strstr($where, "med.") == false)
         $sql .= " INNER JOIN " . $esc['mysql']['dataset'] . "_media med ON med.tweet_id = t.id ";
 		$sql .= " WHERE ";
-		
-		// @print
-		$send_text = serialize($sql);
-		$file = 'plask.txt';
-		file_put_contents($file, $send_text);
 				
     if (!empty($where))
         $sql .= $where;
@@ -295,12 +260,7 @@ function sqlSubset($where = NULL) {
         if (strstr($esc['mysql']['from_user_name'], "AND") !== false) {
             $subqueries = explode(" AND ", $esc['mysql']['from_user_name']);
             foreach ($subqueries as $subquery) {
-                $sql .= "LOWER(t.from_user_name COLLATE $collation) = LOWER('" . $subquery . "' COLLATE $collation) AND ";
-				
-				// @print
-				$send_text = serialize($sql);
-				$file = 'plask.txt';
-				file_put_contents($file, $send_text);
+                $sql .= "LOWER(t.from_user_name COLLATE $collation) = LOWER('" . $subquery . "' COLLATE $collation) AND ";	
 
             }
         } elseif (strstr($esc['mysql']['from_user_name'], "OR") !== false) {
@@ -309,20 +269,11 @@ function sqlSubset($where = NULL) {
             foreach ($subqueries as $subquery) {
                 $sql .= "LOWER(t.from_user_name COLLATE $collation) = LOWER('" . $subquery . "' COLLATE $collation) OR ";
 				
-				// @print
-				$send_text = serialize($sql);
-				$file = 'plask.txt';
-				file_put_contents($file, $send_text);
-				
             }
             $sql = substr($sql, 0, -3) . ") AND ";
         } else {
             $sql .= "LOWER(t.from_user_name COLLATE $collation) = LOWER('" . $esc['mysql']['from_user_name'] . "' COLLATE $collation) AND ";
 				
-				// @print
-            	$send_text = serialize($sql);
-				$file = 'plask.txt';
-				file_put_contents($file, $send_text);
 				
         }
     }
