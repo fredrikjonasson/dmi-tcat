@@ -2,6 +2,7 @@
 require_once __DIR__ . '/common/config.php';
 require_once __DIR__ . '/common/functions.php';
 require_once __DIR__ . '/common/CSV.class.php';
+require_once __DIR__ . '/common/pseudonymize.php';
 
         validate_all_variables();
         dataset_must_exist();

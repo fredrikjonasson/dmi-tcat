@@ -148,19 +148,17 @@ if (defined('ANALYSIS_URL'))
         return exportSettings;
 
     }
-    
+		
+	// Function that checks if the current option in the drop down menu is pseudonymized. If so, print information in html tag.s
     function is_pseudonymized() {
-		var pseudo = document.getElementById("ipt_dataset").value;
-		pseudo.toString();
-		if (pseudo.includes("pseudonymized"))
-		{		
-			pseudonymized = "1";
+		document.getElementById("pseudonymized_choice").onclick = function() {
 			document.getElementById("pseudonymized").innerHTML = "Selected bin is pseudonymized" ;
-		} else
-		{
-			pseudonymized = "0";
-		}
+			}
+		document.getElementById("non_pseudonymized_choice").onclick = function() {
+			document.getElementById("pseudonymized").innerHTML = "" ;
+			}
 	}
+
 	
     $(document).ready(function(){
         $('#form').submit(function(){
@@ -237,11 +235,11 @@ if (defined('ANALYSIS_URL'))
 							if ($set["pseudonymization"] == 1)
 							{
 							
-							echo '<option value="pseudonymized' . $key . '" ' . $v . '>' . $set["bin"] . ' --- ' . number_format($set["notweets"], 0, ",", ".") . ' pseudonymized tweets from ' . $set['mintime'] . ' to ' . $set['maxtime'] . '</option>';	
-
+							echo '<option id="pseudonymized_choice" value="' . $key . '" ' . $v . '>' . $set["bin"] . ' --- ' . number_format($set["notweets"], 0, ",", ".") . '  tweets from ' . $set['mintime'] . ' to ' . $set['maxtime'] . '</option>';	
+							
 							}else {
                             
-                            echo '<option value="' . $key . '" ' . $v . '>' . $set["bin"] . ' --- ' . number_format($set["notweets"], 0, ",", ".") . ' tweets from ' . $set['mintime'] . ' to ' . $set['maxtime'] . '</option>';
+                            echo '<option id="non_pseudonymized_choice" value="' . $key . '" ' . $v . '>' . $set["bin"] . ' --- ' . number_format($set["notweets"], 0, ",", ".") . ' tweets from ' . $set['mintime'] . ' to ' . $set['maxtime'] . '</option>';
                             
                             }
                             

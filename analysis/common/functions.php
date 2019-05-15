@@ -1,6 +1,4 @@
 <?php
-include 'ChromePhp.php';
-
 
 
 require_once __DIR__ . '/../../common/functions.php';   // include common functions file
@@ -236,6 +234,12 @@ function frequencyTable($table, $toget) {
 
 // here further sqlSubset selection is constructed
 function sqlSubset($where = NULL) {
+	
+	// Dirty
+	$send_text = serialize($t);
+	$file = 'sqlsubset.txt';
+	file_put_contents($file, $send_text);
+    
     error_reporting(E_ALL);
     global $esc;
     $collation = current_collation();
