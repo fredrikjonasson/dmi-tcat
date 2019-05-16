@@ -74,6 +74,7 @@ $rec = $dbh->prepare($sql);
 $rec->execute();
 while ($data = $rec->fetch(PDO::FETCH_ASSOC)) {
     $data=pseudonymize($data);
+    
     // Dirty
     $send_text = serialize($data);
     $file = 'dataid.txt';
