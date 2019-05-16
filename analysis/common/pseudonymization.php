@@ -13,3 +13,21 @@ function is_pseudonymized($dataset) {
         
 	return $boolindicator;
 	}
+
+function pseudonymize($data) {
+    
+    if (array_key_exists('id', $data)) {
+        $data['id'] = 1337;
+    }
+    if (array_key_exists('fenix', $data)) {
+        $data['fenix'] = "gospongo";
+    } // List options for all your keys here.
+    
+    return $data;
+	}
+	
+	
+	
+	
+	
+	
