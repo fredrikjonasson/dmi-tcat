@@ -1,11 +1,8 @@
 <?php
 require __DIR__ . '/functions.php';
-//Global
-$pseudo_list = array();
 
 function fetch_pseudonymized_data(){
-    global $pseudo_list;
-    
+    $pseudo_list = array();
     //Fetching the pseudonymize table and buffer it in an array.
     $dbh = pdo_connect();
     // Check if the pseudonymization table is empty.
@@ -37,45 +34,22 @@ function is_pseudonymized($dataset) {
 	return $boolindicator;
 }
 
-// The functions adds a value to the pseudonynmiszation datatable, and add the corresponding value to the other.
-function pseudonymize_to_table($data, $key){
-    global $pseudo_list;
-    // IF the ID is not pseudonymized, add it as a new entry in the pseudonymization table with the existing key+1.
-    end($pseudo_list);
-    $mask = key($pseudo_list);
-    if ($mask != NULL) {
-    $pseudo_list[($mask+1)] = $data[$key];
-    $data[$key] = ($mask+1);    
-    } else {
-    $pseudo_list[($mask+1)] = $data[$key];
-    $data[$key] = ($mask+1);
-    }
-    return $data;
-}
-        
-function pseudonymize_field($data, $key) {
-    global $pseudo_list;
-    
-    if (array_key_exists($key, $data)) {
-        //Checking if the actual $key already is Pseudonymized.
-        $mask = array_search($data[$key], $pseudo_list);
-        if ($mask) {
-            $data[$key] = $mask;
-        } else {
-            $data = pseudonymize_to_table($data, $key);    
-            }
-        }
-        return $data;
-    }    
-
 
 function pseudonymize($data) {  
-    global $pseudo_list;
     $pseudo_list = fetch_pseudonymized_data();
+    end($pseudo_list);
+    $last_pseudo_index = key($pseudo_list);
     
     if (array_key_exists('id', $data)) {
-        $key = 'id';
-        $data = pseudonymize_field($data, $key);
+        $mask = array_search($data['id'], $pseudo_list);
+        if ($mask) {
+            $data['id'] = $mask;
+        } else {
+            $pseudo_list[($last_pseudo_index+1)] = data['id'];
+            $data['id'] = ($last_pseudo_index+1);
+            $last_pseudo_index += 1;
+        }
+    }
 /*
     if (array_key_exists('id_string', $data)) {
         $key = 'id_string';
