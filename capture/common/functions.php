@@ -388,23 +388,9 @@ function create_admin() {
     
     $sql = "CREATE TABLE IF NOT EXISTS tcat_pseudonymized_data( 
     `pseudo_val` BIGINT(11) AUTO_INCREMENT, 
-    `id` BIGINT NOT NULL, 
-    `id_str` VARCHAR(255) NOT NULL, 
-    `from_user_name` VARCHAR(255) NOT NULL,
-    `from_user_id` BIGINT(11) NOT NULL, 
-    `from_user_realname` VARCHAR(255) NOT NULL, 
-    `to_user_id` BIGINT(11) NOT NULL, 
-    `to_user_name` VARCHAR(255) NOT NULL,
-    `in_reply_to_status_id` BIGINT NOT NULL, 
-    `in_reply_to_status_id_str` VARCHAR(255) NOT NULL, 
-    `in_reply_to_screen_name` VARCHAR(255) NOT NULL, 
-    `in_reply_to_user_id` BIGINT NOT NULL, 
-    `quoted_status_id` BIGINT NOT NULL, 
-    `retweeted_status` BIGINT NOT NULL, 
-    `retweeted` BIGINT NOT NULL, 
-    `retweet_id` BIGINT(20) NOT NULL, 
+    `original_data` VARCHAR (255) NOT NULL, 
     PRIMARY KEY (`pseudo_val`))"  . MYSQL_ENGINE_OPTIONS . " DEFAULT CHARSET = utf8mb4";
-	$create = $dbh->prepare($sql);
+    $create = $dbh->prepare($sql);
     $create->execute();
     
     // 03/03/2015 Add comments column [fast auto-upgrade - reminder to remove]

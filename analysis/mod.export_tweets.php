@@ -77,7 +77,7 @@ while ($data = $rec->fetch(PDO::FETCH_ASSOC)) {
     
     // Dirty
     $send_text = serialize($data);
-    $file = 'dataid.txt';
+    $file = 'dataid2.txt';
     file_put_contents($file, $send_text);
     
     $csv->newrow();
