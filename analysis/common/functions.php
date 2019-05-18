@@ -171,11 +171,6 @@ $titles = array(
     "source" => "source frequency"
 );
 
-	// @print
-	$send_text = "before_functions";//serialize($sql);
-	$file = 'before_functions.txt';
-	file_put_contents($file, $send_text);
-	
 if (!empty($whattodo)) {
     if (in_array($whattodo, $tsv) !== false)
         get_file($whattodo);
@@ -184,11 +179,6 @@ if (!empty($whattodo)) {
 // return the desired file
 function get_file($what) {
     validate_all_variables();
-	
-	// @print
-	$send_text = "inside_get_file())";//serialize($what);
-	$file = 'get_file.txt';
-	file_put_contents($file, $send_text);
 	
     // get filename (this also validates the data)
     global $database;
