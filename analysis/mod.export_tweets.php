@@ -4,21 +4,10 @@ require_once __DIR__ . '/common/config.php';
 require_once __DIR__ . '/common/CSV.class.php';
 require_once __DIR__ . '/common/pseudonymization.php';
 
-function print_function()
-{
-    // Dirty
-    $send_text = serialize($esc['mysql']['dataset']);
-    $file = 'sql_print.txt';
-    file_put_contents($file, $send_text);
-}
-
 validate_all_variables();
 dataset_must_exist();
 
-// if ((is_pseudonymized($esc['mysql']['dataset'])) == 1 )
-// {
-// pseudonymize($esc['mysql']['dataset'], "_tweets");_
-// }
+
 
 $dbh = pdo_connect();
 // pdo_unbuffered($dbh);
@@ -75,10 +64,6 @@ $rec->execute();
 while ($data = $rec->fetch(PDO::FETCH_ASSOC)) {
     $data=pseudonymize($data);
     
-    // Dirty
-    $send_text = serialize($data);
-    $file = 'dataid2.txt';
-    file_put_contents($file, $send_text);
     
     $csv->newrow();
     if (preg_match("/_urls/", $sql) || preg_match("/_media/", $sql) || preg_match("/_mentions/", $sql))

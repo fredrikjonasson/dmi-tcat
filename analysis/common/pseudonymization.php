@@ -29,16 +29,19 @@ function fetch_pseudonymized_data(){
     
     return $pseudo_list;
 }
-   
 
-function save_pseudonymized_data($pseudo_list){
+function save_pseudonymized_data($pseudo_list, $insert_start_value ,$last_pseudo_index){
     $dbh = pdo_connect();
-    // Dirty
+    
+    // We only want to add the new pseudovalues and keep the old ones without changing the database. 
+    $pseudo_list = array_slice($pseudo_list, $insert_start_value, $last_pseudo_index, TRUE);            
     foreach ($pseudo_list as $key => $value) {
+
         $sql = "INSERT INTO tcat_pseudonymized_data (pseudo_val, original_data) VALUES (?, ?);";
         $stmt = $dbh -> prepare($sql);
         $stmt->execute([$key, $value]);        
-    }  
+    }
+  
     $dbh = NULL;
 }
 
@@ -47,7 +50,7 @@ function is_pseudonymized($dataset) {
 	$dbh = pdo_connect();
 	$sql = "SELECT pseudonymization FROM tcat_query_bins WHERE querybin ='".$dataset."';";
 	$rec = $dbh->prepare($sql);
-        $rec->execute();
+    $rec->execute();
 	$boolindicator = $rec -> fetch(PDO::FETCH_NUM);	
 	$dbh = NULL;
         
@@ -57,7 +60,7 @@ function is_pseudonymized($dataset) {
 function pseudonymize($data) {  
     $pseudo_list = fetch_pseudonymized_data();
     end($pseudo_list);
-    $last_pseudo_index = key($pseudo_list);
+    $insert_start_value = $last_pseudo_index = key($pseudo_list);
     
     if (array_key_exists('id', $data) && ($data['id'] != NULL)) {
         $mask = array_search($data['id'], $pseudo_list);
@@ -229,12 +232,9 @@ function pseudonymize($data) {
             $last_pseudo_index += 1;
         }
     }
-    save_pseudonymized_data($pseudo_list);
+    save_pseudonymized_data($pseudo_list, $insert_start_value ,$last_pseudo_index);
     return $data;
 }
-	
-	
-	
 	
 	
 	
