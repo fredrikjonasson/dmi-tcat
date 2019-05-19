@@ -1,0 +1,1 @@
+s:41:"SHOW FULL COLUMNS FROM no_pseudo_hashtags";

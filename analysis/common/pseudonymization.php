@@ -51,7 +51,7 @@ function is_pseudonymized($dataset) {
 	$sql = "SELECT pseudonymization FROM tcat_query_bins WHERE querybin ='".$dataset."';";
 	$rec = $dbh->prepare($sql);
     $rec->execute();
-	$boolindicator = $rec -> fetch(PDO::FETCH_NUM);	
+	$boolindicator = $rec -> fetchcolumn();	
 	$dbh = NULL;
         
 	return $boolindicator;

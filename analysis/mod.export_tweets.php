@@ -61,10 +61,14 @@ else
 // loop over results and write to file.
 $rec = $dbh->prepare($sql);
 $rec->execute();
+
+$pseudonymized_bool = is_pseudonymized($esc['mysql']['dataset']);
+
 while ($data = $rec->fetch(PDO::FETCH_ASSOC)) {
-    $data=pseudonymize($data);
-    
-    
+    if ($pseudonymized_bool == 1) {
+        $data=pseudonymize($data);
+    }
+
     $csv->newrow();
     if (preg_match("/_urls/", $sql) || preg_match("/_media/", $sql) || preg_match("/_mentions/", $sql))
         $id = $data['tweet_id'];
