@@ -28,10 +28,6 @@ $dbh = pdo_connect();
 $rec = $dbh->prepare($sql);
 $rec->execute();
 while ($res = $rec->fetch(PDO::FETCH_ASSOC)) {
-    // Dirty print
-    $send_text = serialize($res);
-    $file = 'mjask.txt';
-    file_put_contents($file, $send_text);
 
     if ($res['db'] !== $database) { continue; }
     if ($res['Command'] !== 'Query') { continue; }
@@ -49,11 +45,6 @@ while ($res = $rec->fetch(PDO::FETCH_ASSOC)) {
     }
 }
 $working = array_unique($working);
-// Dirty print
-$send_text = serialize($working);
-$file = 'mjask.txt';
-file_put_contents($file, $send_text);
-
 
 // we accept two long running queries, otherwise we may block depending on the configured thresholds
 $load = 0;

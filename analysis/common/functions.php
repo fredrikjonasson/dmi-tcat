@@ -512,11 +512,6 @@ function generate($what, $filename) {
     global $tsv, $network, $esc, $titles, $database, $interval, $outputformat;
     $dbh = pdo_connect();
 
-	// @print
-	$send_text = "generate";
-	$file = 'generated_entry.txt';
-	file_put_contents($file, $send_text);
-
     require_once __DIR__ . '/CSV.class.php';
 
     // initialize variables
@@ -526,11 +521,6 @@ function generate($what, $filename) {
 
     // determine interval
     $sql = "SELECT MIN(t.created_at) AS min, MAX(t.created_at) AS max FROM " . $esc['mysql']['dataset'] . "_tweets t ";
-    
-    // @print
-	$send_text = serialize($sql);
-	$file = 'generated_sql.txt';
-	file_put_contents($file, $send_text);
     
     $sql .= sqlSubset();
     //print $sql . "<bR>";
@@ -879,11 +869,6 @@ function current_collation() {
     $collation = 'utf8_bin';
     $is_utf8mb4 = false;
     $sql = "SHOW FULL COLUMNS FROM " . $esc['mysql']['dataset'] . "_hashtags";
-    
-    // @print
-	$send_text = serialize($sql);
-	$file = 'current_coll.txt';
-	file_put_contents($file, $send_text);
     
     $rec = $dbh->prepare($sql);
     $rec->execute();
