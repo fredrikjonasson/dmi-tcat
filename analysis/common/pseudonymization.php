@@ -61,7 +61,17 @@ function pseudonymize($data) {
     $pseudo_list = fetch_pseudonymized_data();
     end($pseudo_list);
     $insert_start_value = $last_pseudo_index = key($pseudo_list);
-    
+
+    if (array_key_exists('tweetid', $data) && ($data['tweetid'] != NULL)) {
+        $mask = array_search($data['tweetid'], $pseudo_list);
+        if ($mask) {
+            $data['tweetid'] = $mask;
+        } else {
+            $pseudo_list[($last_pseudo_index+1)] = $data['tweetid'];
+            $data['tweetid'] = ($last_pseudo_index+1);
+            $last_pseudo_index += 1;
+        }
+    }
     if (array_key_exists('id', $data) && ($data['id'] != NULL)) {
         $mask = array_search($data['id'], $pseudo_list);
         if ($mask) {
@@ -109,6 +119,46 @@ function pseudonymize($data) {
         } else {
             $pseudo_list[($last_pseudo_index+1)] = $data['from_user_realname'];
             $data['from_user_realname'] = ($last_pseudo_index+1);
+            $last_pseudo_index += 1;
+        }
+    }
+    if (array_key_exists('user_from_name', $data) && ($data['user_from_name'] != NULL)) {
+        $mask = array_search($data['user_from_name'], $pseudo_list);
+        if ($mask) {
+            $data['user_from_name'] = $mask;
+        } else {
+            $pseudo_list[($last_pseudo_index+1)] = $data['user_from_name'];
+            $data['user_from_name'] = ($last_pseudo_index+1);
+            $last_pseudo_index += 1;
+        }
+    }
+    if (array_key_exists('user_from_id', $data) && ($data['user_from_id'] != NULL)) {
+        $mask = array_search($data['user_from_id'], $pseudo_list);
+        if ($mask) {
+            $data['user_from_id'] = $mask;
+        } else {
+            $pseudo_list[($last_pseudo_index+1)] = $data['user_from_id'];
+            $data['user_from_id'] = ($last_pseudo_index+1);
+            $last_pseudo_index += 1;
+        }
+    }
+    if (array_key_exists('user_to_id', $data) && ($data['user_to_id'] != NULL)) {
+        $mask = array_search($data['user_to_id'], $pseudo_list);
+        if ($mask) {
+            $data['user_to_id'] = $mask;
+        } else {
+            $pseudo_list[($last_pseudo_index+1)] = $data['user_to_id'];
+            $data['user_to_id'] = ($last_pseudo_index+1);
+            $last_pseudo_index += 1;
+        }
+    }
+    if (array_key_exists('user_to_name', $data) && ($data['user_to_name'] != NULL)) {
+        $mask = array_search($data['user_to_name'], $pseudo_list);
+        if ($mask) {
+            $data['user_to_name'] = $mask;
+        } else {
+            $pseudo_list[($last_pseudo_index+1)] = $data['user_to_name'];
+            $data['user_to_name'] = ($last_pseudo_index+1);
             $last_pseudo_index += 1;
         }
     }

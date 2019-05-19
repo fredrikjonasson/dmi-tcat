@@ -1,7 +1,8 @@
 <?php
 require_once __DIR__ . '/common/config.php';
-require_once __DIR__ . '/common/functions.php';
+//require_once __DIR__ . '/common/functions.php';
 require_once __DIR__ . '/common/CSV.class.php';
+require_once __DIR__ . '/common/pseudonymization.php';
 
         validate_all_variables();
         dataset_must_exist();
@@ -47,7 +48,11 @@ require_once __DIR__ . '/common/CSV.class.php';
         $sql .= "GROUP BY text HAVING count >= " . $min_nr_of_nodes . " ORDER BY count DESC";
         $rec = $dbh->prepare($sql);
         $rec->execute();
+
+        $pseudonymized_bool = is_pseudonymized($esc['mysql']['dataset']);
+
         while ($res = $rec->fetch(PDO::FETCH_ASSOC)) {
+
 
             $text = $res['text'];
 
@@ -57,6 +62,11 @@ require_once __DIR__ . '/common/CSV.class.php';
             $rec3->bindParam(':text', $text, PDO::PARAM_STR);
             $rec3->execute();
             while ($data = $rec3->fetch(PDO::FETCH_ASSOC)) {
+                
+                if ($pseudonymized_bool == 1) {
+                    $data=pseudonymize($data);
+                }
+
                 $csv->newrow();
                 if (preg_match("/_urls/", $sql))
                     $id = $data['tweet_id'];

@@ -1,7 +1,8 @@
 <?php
 require_once __DIR__ . '/common/config.php';
-require_once __DIR__ . '/common/functions.php';
+//require_once __DIR__ . '/common/functions.php';
 require_once __DIR__ . '/common/CSV.class.php';
+require_once __DIR__ . '/common/pseudonymization.php';
 
         validate_all_variables();
         dataset_must_exist();
@@ -23,7 +24,15 @@ require_once __DIR__ . '/common/CSV.class.php';
 
         $rec = $dbh->prepare($sql);
         $rec->execute();
+
+        $pseudonymized_bool = is_pseudonymized($esc['mysql']['dataset']);
+
         while ($data = $rec->fetch(PDO::FETCH_ASSOC)) {
+            
+            if ($pseudonymized_bool == 1) {
+                $data=pseudonymize($data);
+            }
+
             $csv->newrow();    
             $csv->addfield($data['id'], 'integer');
             $csv->addfield($data['user_from_id'], 'integer');
