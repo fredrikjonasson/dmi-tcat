@@ -25,10 +25,7 @@ require_once __DIR__ . '/common/functions.php';
 
             function sendUrl(_file) {
 
-                // Dirty
-                $send_text = "simple";
-                $file = 'sendurl.txt';
-                file_put_contents($file, $send_text);
+                
 
                 var _d1 = $("#ipt_startdate").val();
                 var _d2 = $("#ipt_enddate").val();
@@ -261,7 +258,7 @@ if (defined('ANALYSIS_URL'))
                     print "<table style='float:right'><tr><td>" . number_format($count, 0, ",", ".") . " tweets archived so far (and counting)</td></tr></table>";
                     ?>
                     <h3>Export Pseudonymization table</h3>
-                    <button onclick="sendUrl('mod.export_pseudonymization.php')"> Download the pseudonymization table</button>
+                    <button type="button" onclick="sendUrl('mod.export_pseudonymization.php');return false;"> Download the pseudonymization table</button>
                     <h3>Select parameters:</h3>
 
                     <table>
