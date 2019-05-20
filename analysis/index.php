@@ -24,6 +24,12 @@ require_once __DIR__ . '/common/functions.php';
 			var pseudonymized = 0;
 
             function sendUrl(_file) {
+
+                // Dirty
+                $send_text = "simple";
+                $file = 'sendurl.txt';
+                file_put_contents($file, $send_text);
+
                 var _d1 = $("#ipt_startdate").val();
                 var _d2 = $("#ipt_enddate").val();
                 var outputformat = getOutputformat();
@@ -158,8 +164,7 @@ if (defined('ANALYSIS_URL'))
 			document.getElementById("pseudonymized").innerHTML = "" ;
 			}
 	}
-
-	
+    
     $(document).ready(function(){
         $('#form').submit(function(){
             sendUrl();
@@ -255,7 +260,8 @@ if (defined('ANALYSIS_URL'))
                     print "<p id='pseudonymized' ></p>";                    
                     print "<table style='float:right'><tr><td>" . number_format($count, 0, ",", ".") . " tweets archived so far (and counting)</td></tr></table>";
                     ?>
-
+                    <h3>Export Pseudonymization table</h3>
+                    <button onclick="sendUrl('mod.export_pseudonymization.php')"> Download the pseudonymization table</button>
                     <h3>Select parameters:</h3>
 
                     <table>
