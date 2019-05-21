@@ -150,28 +150,38 @@ if (defined('ANALYSIS_URL'))
                 exportSettings += $(this).val() + ",";
         });
         return exportSettings;
-
     }
+
 		
 	// Function that checks if the current option in the drop down menu is pseudonymized. If so, print information in html tag.s
     function is_pseudonymized() {
+        var bool = "<?php echo is_admin() ?>"; 
 		document.getElementById("pseudonymized_choice").onclick = function() {
 			document.getElementById("pseudonymized").innerHTML = "Selected bin is pseudonymized" ;
-            alert("fiscus");
-            if (is_admin()) {
-                alert("Fiscus");
-                document.getElementById("toggleexportheader").style.visibility = "visible";
-                document.getElementById("toggleexportbutton").style.visibility = "visible";
-			} else {
-                document.getElementById("toggleexportbutton").style.visibility = "hidden";
-                document.getElementById("toggleexportheader").style.visibility = "hidden";
-
-            }
+        //    if (bool) {
+        //        document.getElementById("toggleexportheader").style.visibility = "visible";    
+        //    //    alert("Fiscus");
+        //    //    document.getElementById("toggleexportheader").style.visibility = "visible";
+        //    //    document.getElementById("toggleexportbutton").style.visibility = "visible";
+		//	} else {
+        //    //    alert("non-admin");
+        //    //    document.getElementById("toggleexportbutton").style.visibility = "block";
+        //    //    document.getElementById("toggleexportheader").style.visibility = "block";
+//
+        //    }
         }
 		document.getElementById("non_pseudonymized_choice").onclick = function() {
 			document.getElementById("pseudonymized").innerHTML = "" ;
 			}
 	}
+    function exportpseudonymization(params) {
+        var bool = "<?php echo is_admin() ?>"; 
+        if(bool) {
+        sendUrl('mod.export_pseudonymization.php')
+    } else {
+        alert("You dont have clearence");
+    }
+    }
     
     $(document).ready(function(){
         $('#form').submit(function(){
@@ -265,16 +275,13 @@ if (defined('ANALYSIS_URL'))
 
                     echo "</select> ";
                     
-                    print "<p id='pseudonymized' ></p>";                    
+                    print "<p id='pseudonymized' > </p>";                    
                     print "<table style='float:right'><tr><td>" . number_format($count, 0, ",", ".") . " tweets archived so far (and counting)</td></tr></table>";
                     ?>
-                    <?php
-                if (is_admin())
-                    $arg = 'mod.pseudonymization.php';
-                    print '<a href="../capture/index.php" class="if_toplinks">admin</a>';
-                    print '<h3 id="toggleexportheader" >Export Pseudonymization table</h3>';
-                    print "<button type='button' id='toggleexportbutton' onclick='sendUrl(.\'$arg\'.);return false;'> Download the pseudonymization table</button>";
-                    ?>  
+
+                    
+                    <h3 >Export Pseudonymization table</h3>
+                    <button onclick="exportpseudonymization();return false;"> Download the pseudonymization table</button>
                     
                     <h3>Select parameters:</h3>
 
@@ -290,7 +297,7 @@ if (defined('ANALYSIS_URL'))
 
                         <tr>
                             <td class="tbl_head">From user: </td><td><input type="text" id="ipt_from_user" size="60" name="from_user_name"  value="<?php echo $from_user_name; ?>" /> (empty: from any user*)</td>
-			</tr>
+			            </tr>
 
                         <tr>
                             <td class="tbl_head">Exclude user: </td><td><input type="text" id="ipt_exclude_from_user" size="60" name="exclude_from_user_name"  value="<?php echo $exclude_from_user_name; ?>" /> (empty: exclude no users*)</td>

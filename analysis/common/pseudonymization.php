@@ -34,19 +34,10 @@ function save_pseudonymized_data($pseudo_list, $insert_start_value ,$last_pseudo
     // We only want to add the new pseudovalues and keep the old ones without changing the database. 
     $pseudo_list = array_slice($pseudo_list, $insert_start_value, $last_pseudo_index, TRUE);            
     foreach ($pseudo_list as $key => $value) {
-        // Dirty
-        //foreach ($value as $key1 => $value1) {
-//
-        //}
 
-        //$send_text = serialize($value['original_data']);
-        //$file = 'slaska.txt';
-        //file_put_contents($file, $send_text);
-        
         $pseudo_val = $key;
         $original_data=$value['original_data']; 
         $fieldtype=$value['fieldtype'];
-
 
         $sql = "INSERT INTO tcat_pseudonymized_data (pseudo_val, original_data, fieldtype) VALUES (?, ?, ?);";
         $stmt = $dbh -> prepare($sql);
@@ -83,8 +74,10 @@ function pseudonymize($data) {
                 'fieldtype' => 'tweetid'
             );
             $pseudo_list[($last_pseudo_index+1)] = $newData;
+            $data[('tweetid')]=($last_pseudo_index+1);
+            $last_pseudo_index = ($last_pseudo_index + 1);
         }
-    }
+    }   
     if (array_key_exists('id', $data) && ($data['id'] != NULL)) {
         $mask = array_search($data['id'],array_column($pseudo_list, 'original_data' ));
         if ($mask) {
@@ -95,6 +88,8 @@ function pseudonymize($data) {
                 'fieldtype' => 'id'
             );
             $pseudo_list[($last_pseudo_index+1)] = $newData;
+            $data[('id')]=($last_pseudo_index+1);
+            $last_pseudo_index = ($last_pseudo_index + 1);
         }
     }
     if (array_key_exists('id_string', $data) && ($data['id_string'] != NULL)) {
@@ -107,6 +102,8 @@ function pseudonymize($data) {
                 'fieldtype' => 'id_string'
             );
             $pseudo_list[($last_pseudo_index+1)] = $newData;
+            $data[('id_string')]=($last_pseudo_index+1);
+            $last_pseudo_index = ($last_pseudo_index + 1);
         }
     }
     if (array_key_exists('from_user_id', $data) && ($data['from_user_id'] != NULL)) {
@@ -119,6 +116,8 @@ function pseudonymize($data) {
                 'fieldtype' => 'from_user_id'
             );
             $pseudo_list[($last_pseudo_index+1)] = $newData;
+            $data[('from_user_id')]=($last_pseudo_index+1);
+            $last_pseudo_index = ($last_pseudo_index + 1);
         }
     }
     if (array_key_exists('from_user_name', $data) && ($data['from_user_name'] != NULL)) {
@@ -131,6 +130,8 @@ function pseudonymize($data) {
                 'fieldtype' => 'from_user_name'
             );
             $pseudo_list[($last_pseudo_index+1)] = $newData;
+            $data[('from_user_name')]=($last_pseudo_index+1);
+            $last_pseudo_index = ($last_pseudo_index + 1);
         }
     }
     if (array_key_exists('from_user_realname', $data) && ($data['from_user_realname'] != NULL)) {
@@ -143,6 +144,8 @@ function pseudonymize($data) {
                 'fieldtype' => 'from_user_realname'
             );
             $pseudo_list[($last_pseudo_index+1)] = $newData;
+            $data[('from_user_realname')]=($last_pseudo_index+1);
+            $last_pseudo_index = ($last_pseudo_index + 1);
         }
     }
     if (array_key_exists('user_from_name', $data) && ($data['user_from_name'] != NULL)) {
@@ -155,6 +158,8 @@ function pseudonymize($data) {
                 'fieldtype' => 'user_from_name'
             );
             $pseudo_list[($last_pseudo_index+1)] = $newData;
+            $data[('user_from_name')]=($last_pseudo_index+1);
+            $last_pseudo_index = ($last_pseudo_index + 1);
         }
     }
     if (array_key_exists('user_from_id', $data) && ($data['user_from_id'] != NULL)) {
@@ -167,6 +172,8 @@ function pseudonymize($data) {
                 'fieldtype' => 'user_from_id'
             );
             $pseudo_list[($last_pseudo_index+1)] = $newData;
+            $data[('user_from_id')]=($last_pseudo_index+1);
+            $last_pseudo_index = ($last_pseudo_index + 1);
         }
     }
     if (array_key_exists('user_to_id', $data) && ($data['user_to_id'] != NULL)) {
@@ -179,6 +186,8 @@ function pseudonymize($data) {
                 'fieldtype' => 'user_to_id'
             );
             $pseudo_list[($last_pseudo_index+1)] = $newData;
+            $data[('user_to_id')]=($last_pseudo_index+1);
+            $last_pseudo_index = ($last_pseudo_index + 1);
         }
     }
     if (array_key_exists('user_to_name', $data) && ($data['user_to_name'] != NULL)) {
@@ -191,6 +200,8 @@ function pseudonymize($data) {
                 'fieldtype' => 'user_to_name'
             );
             $pseudo_list[($last_pseudo_index+1)] = $newData;
+            $data[('user_to_name')]=($last_pseudo_index+1);
+            $last_pseudo_index = ($last_pseudo_index + 1);
         }
     }
     if (array_key_exists('to_user_id', $data) && ($data['to_user_id'] != NULL)) {
@@ -203,6 +214,8 @@ function pseudonymize($data) {
                 'fieldtype' => 'to_user_id'
             );
             $pseudo_list[($last_pseudo_index+1)] = $newData;
+            $data[('to_user_id')]=($last_pseudo_index+1);
+            $last_pseudo_index = ($last_pseudo_index + 1);
         }
     }
     if (array_key_exists('to_user_name', $data) && ($data['to_user_name'] != NULL)) {
@@ -215,6 +228,8 @@ function pseudonymize($data) {
                 'fieldtype' => 'to_user_name'
             );
             $pseudo_list[($last_pseudo_index+1)] = $newData;
+            $data[('to_user_name')]=($last_pseudo_index+1);
+            $last_pseudo_index = ($last_pseudo_index + 1);
         }
     }
     if (array_key_exists('in_reply_to_status_id', $data) && ($data['in_reply_to_status_id'] != NULL)) {
@@ -227,6 +242,8 @@ function pseudonymize($data) {
                 'fieldtype' => 'in_reply_to_status_id'
             );
             $pseudo_list[($last_pseudo_index+1)] = $newData;
+            $data[('in_reply_to_status_id')]=($last_pseudo_index+1);
+            $last_pseudo_index = ($last_pseudo_index + 1);
         }
     }
     if (array_key_exists('in_reply_to_status_id_str', $data) && ($data['in_reply_to_status_id_str'] != NULL)) {
@@ -239,6 +256,8 @@ function pseudonymize($data) {
                 'fieldtype' => 'in_reply_to_status_id_str'
             );
             $pseudo_list[($last_pseudo_index+1)] = $newData;
+            $data[('in_reply_to_status_id_str')]=($last_pseudo_index+1);
+            $last_pseudo_index = ($last_pseudo_index + 1);
         }
     }
     if (array_key_exists('in_reply_to_user_id', $data) && ($data['in_reply_to_user_id'] != NULL)) {
@@ -251,6 +270,8 @@ function pseudonymize($data) {
                 'fieldtype' => 'in_reply_to_user_id'
             );
             $pseudo_list[($last_pseudo_index+1)] = $newData;
+            $data[('in_reply_to_user_id')]=($last_pseudo_index+1);
+            $last_pseudo_index = ($last_pseudo_index + 1);
         }
     }
     if (array_key_exists('in_reply_to_screen_name', $data) && ($data['in_reply_to_screen_name'] != NULL)) {
@@ -263,6 +284,8 @@ function pseudonymize($data) {
                 'fieldtype' => 'in_reply_to_screen_name'
             );
             $pseudo_list[($last_pseudo_index+1)] = $newData;
+            $data[('in_reply_to_screen_name')]=($last_pseudo_index+1);
+            $last_pseudo_index = ($last_pseudo_index + 1);
         }
     }
     if (array_key_exists('to_user_name', $data) && ($data['to_user_name'] != NULL)) {
@@ -275,6 +298,8 @@ function pseudonymize($data) {
                 'fieldtype' => 'to_user_name'
             );
             $pseudo_list[($last_pseudo_index+1)] = $newData;
+            $data[('to_user_name')]=($last_pseudo_index+1);
+            $last_pseudo_index = ($last_pseudo_index + 1);
         }
     }
     if (array_key_exists('in_reply_to_status_id', $data) && ($data['in_reply_to_status_id'] != NULL)) {
@@ -287,6 +312,8 @@ function pseudonymize($data) {
                 'fieldtype' => 'in_reply_to_status_id'
             );
             $pseudo_list[($last_pseudo_index+1)] = $newData;
+            $data[('in_reply_to_status_id')]=($last_pseudo_index+1);
+            $last_pseudo_index = ($last_pseudo_index + 1);
         }
     }
     if (array_key_exists('quoted_status_id', $data) && ($data['quoted_status_id'] != NULL)) {
@@ -299,6 +326,8 @@ function pseudonymize($data) {
                 'fieldtype' => 'quoted_status_id'
             );
             $pseudo_list[($last_pseudo_index+1)] = $newData;
+            $data[('quoted_status_id')]=($last_pseudo_index+1);
+            $last_pseudo_index = ($last_pseudo_index + 1);
         }
     }
     if (array_key_exists('retweeted_status', $data) && ($data['retweeted_status'] != NULL)) {
@@ -311,6 +340,8 @@ function pseudonymize($data) {
                 'fieldtype' => 'retweeted_status'
             );
             $pseudo_list[($last_pseudo_index+1)] = $newData;
+            $data[('retweeted_status')]=($last_pseudo_index+1);
+            $last_pseudo_index = ($last_pseudo_index + 1);
         }
     }
     if (array_key_exists('retweeted', $data) && ($data['retweeted'] != NULL)) {
@@ -323,10 +354,12 @@ function pseudonymize($data) {
                 'fieldtype' => 'retweeted'
             );
             $pseudo_list[($last_pseudo_index+1)] = $newData;
+            $data[('retweeted')]=($last_pseudo_index+1);
+            $last_pseudo_index = ($last_pseudo_index + 1);
         }
     }
     if (array_key_exists('retweet_id', $data) && ($data['retweet_id'] != NULL)) {
-        $mask = array_search($data['retweet_id'],array_column($pseudo_list, 'original_data' ));
+        $mask = array_search($data['retweet_id'], array_column($pseudo_list, 'original_data' ));
         if ($mask) {
             $data['retweet_id'] = $mask;
         } else {
@@ -335,10 +368,47 @@ function pseudonymize($data) {
                 'fieldtype' => 'retweet_id'
             );
             $pseudo_list[($last_pseudo_index+1)] = $newData;
+            $data[('retweet_id')]=($last_pseudo_index+1);
+            $last_pseudo_index = ($last_pseudo_index + 1);
         }
     }
-    save_pseudonymized_data($pseudo_list, $insert_start_value ,$last_pseudo_index);
+    if (array_key_exists('retweet_id', $data) && ($data['retweet_id'] != NULL)) {
+        $mask = array_search($data['retweet_id'], array_column($pseudo_list, 'original_data' ));
+        if ($mask) {
+            $data['retweet_id'] = $mask;
+        } else {
+            $newData = array(
+                'original_data' => $data['retweet_id'],
+                'fieldtype' => 'retweet_id'
+            );
+            $pseudo_list[($last_pseudo_index+1)] = $newData;
+            $data[('retweet_id')]=($last_pseudo_index+1);
+            $last_pseudo_index = ($last_pseudo_index + 1);
+        }
+    }
+    if (array_key_exists('text', $data) && ($data['text'] != NULL)) {
+        $mask = array_search($data['text'], array_column($pseudo_list, 'original_data' ));
+        if ($mask) {
+            $data['text'] = $mask;
+        } else {
+            $newData = array(
+                'original_data' => $data['text'],
+                'fieldtype' => 'text'
+            );
+            $pseudo_list[($last_pseudo_index+1)] = $newData;
+            $data[('text')]=($last_pseudo_index+1);
+            $last_pseudo_index = ($last_pseudo_index + 1);
+        }
+    }
+    if (array_key_exists('from_user_profile_image_url', $data) && ($data['from_user_profile_image_url'] != NULL)) {
+        $data['from_user_profile_image_url'] = "Omitted, see original table";
+    }
+    if (array_key_exists('from_user_url', $data) && ($data['from_user_url'] != NULL)) {
+        $data['from_user_url'] = "Omitted, see original table";
+    }
+    save_pseudonymized_data($pseudo_list, $insert_start_value , $last_pseudo_index);
     return $data;
+    
 }
 	
 	
