@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../common/functions.php';
+require_once __DIR__ . '/../capture/common/functions.php';
 require_once __DIR__ . '/common/config.php';
 require_once __DIR__ . '/common/functions.php';
 ?>
@@ -156,7 +157,17 @@ if (defined('ANALYSIS_URL'))
     function is_pseudonymized() {
 		document.getElementById("pseudonymized_choice").onclick = function() {
 			document.getElementById("pseudonymized").innerHTML = "Selected bin is pseudonymized" ;
-			}
+            alert("fiscus");
+            if (is_admin()) {
+                alert("Fiscus");
+                document.getElementById("toggleexportheader").style.visibility = "visible";
+                document.getElementById("toggleexportbutton").style.visibility = "visible";
+			} else {
+                document.getElementById("toggleexportbutton").style.visibility = "hidden";
+                document.getElementById("toggleexportheader").style.visibility = "hidden";
+
+            }
+        }
 		document.getElementById("non_pseudonymized_choice").onclick = function() {
 			document.getElementById("pseudonymized").innerHTML = "" ;
 			}
@@ -257,8 +268,14 @@ if (defined('ANALYSIS_URL'))
                     print "<p id='pseudonymized' ></p>";                    
                     print "<table style='float:right'><tr><td>" . number_format($count, 0, ",", ".") . " tweets archived so far (and counting)</td></tr></table>";
                     ?>
-                    <h3>Export Pseudonymization table</h3>
-                    <button type="button" onclick="sendUrl('mod.export_pseudonymization.php');return false;"> Download the pseudonymization table</button>
+                    <?php
+                if (is_admin())
+                    $arg = 'mod.pseudonymization.php';
+                    print '<a href="../capture/index.php" class="if_toplinks">admin</a>';
+                    print '<h3 id="toggleexportheader" >Export Pseudonymization table</h3>';
+                    print "<button type='button' id='toggleexportbutton' onclick='sendUrl(.\'$arg\'.);return false;'> Download the pseudonymization table</button>";
+                    ?>  
+                    
                     <h3>Select parameters:</h3>
 
                     <table>

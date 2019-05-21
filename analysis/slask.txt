@@ -1,0 +1,1 @@
+a:3:{s:10:"pseudo_val";s:4:"2428";s:13:"original_data";s:19:"1130702369090617345";s:9:"fieldtype";s:10:"retweet_id";}

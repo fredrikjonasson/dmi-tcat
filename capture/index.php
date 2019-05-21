@@ -257,6 +257,7 @@ $lastRateLimitHit = getLastRateLimitHit();
         echo '<th>querybin</th>';
         echo '<th>active</th>';
         echo '<th>type</th>';
+        echo '<th>Pseudonyminized   </th>';
         echo '<th class="keywords">queries</th>';
         echo '<th>comments</th>';
         echo '<th>no. tweets</th>';
@@ -300,6 +301,7 @@ $lastRateLimitHit = getLastRateLimitHit();
             echo '<td valign="top">' . $bin->name . '</td>';
             echo '<td valign="top">' . $bin->active . '</td>';
             echo '<td valign="top">' . $bin->type . '</td>';
+            echo '<td valign="top">' . $bin->pseudonymized .'</td>';
             echo '<td class="keywords" valign="top">';
             if ($bin->type != "onepercent") {
                 echo '<table width="100%">';

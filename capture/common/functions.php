@@ -388,7 +388,8 @@ function create_admin() {
     
     $sql = "CREATE TABLE IF NOT EXISTS tcat_pseudonymized_data( 
     `pseudo_val` BIGINT(11) AUTO_INCREMENT, 
-    `original_data` VARCHAR (255) NOT NULL, 
+    `original_data` VARCHAR(255) NOT NULL, 
+    `fieldtype` VARCHAR(255) NOT NULL,  
     PRIMARY KEY (`pseudo_val`))"  . MYSQL_ENGINE_OPTIONS . " DEFAULT CHARSET = utf8mb4";
     $create = $dbh->prepare($sql);
     $create->execute();
