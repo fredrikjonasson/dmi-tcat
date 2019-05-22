@@ -96,7 +96,6 @@ function pseudonymize($data) {
             $pseudo_list = $argument_array['pseudo_list']; 
             }        
     }
-
     if (array_key_exists('from_user_profile_image_url', $data) && ($data['from_user_profile_image_url'] != NULL)) {
         $data['from_user_profile_image_url'] = "Omitted, see original table";
     }
@@ -104,7 +103,8 @@ function pseudonymize($data) {
         $data['from_user_url'] = "Omitted, see original table";
     }
     if (array_key_exists('text', $data) && ($data['text'] != NULL)) {
-        $regexp = '/(^|[^@\w])@(\w{1,15})\b/';
+        //$regexp = '/(^|[^@\w])@(\w{1,15})\b/';
+        $regexp = '/\s([@][\w_-]+)/';
         preg_match_all($regexp, $data['text'], $matches);
         foreach ($matches[0] as $key => $value) {
             $mask = array_search($value, array_column($pseudo_list, 'original_data' ));
