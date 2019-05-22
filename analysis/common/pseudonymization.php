@@ -372,39 +372,29 @@ function pseudonymize($data) {
             $last_pseudo_index = ($last_pseudo_index + 1);
         }
     }
-    if (array_key_exists('retweet_id', $data) && ($data['retweet_id'] != NULL)) {
-        $mask = array_search($data['retweet_id'], array_column($pseudo_list, 'original_data' ));
-        if ($mask) {
-            $data['retweet_id'] = $mask;
-        } else {
-            $newData = array(
-                'original_data' => $data['retweet_id'],
-                'fieldtype' => 'retweet_id'
-            );
-            $pseudo_list[($last_pseudo_index+1)] = $newData;
-            $data[('retweet_id')]=($last_pseudo_index+1);
-            $last_pseudo_index = ($last_pseudo_index + 1);
-        }
-    }
-    if (array_key_exists('text', $data) && ($data['text'] != NULL)) {
-        $mask = array_search($data['text'], array_column($pseudo_list, 'original_data' ));
-        if ($mask) {
-            $data['text'] = $mask;
-        } else {
-            $newData = array(
-                'original_data' => $data['text'],
-                'fieldtype' => 'text'
-            );
-            $pseudo_list[($last_pseudo_index+1)] = $newData;
-            $data[('text')]=($last_pseudo_index+1);
-            $last_pseudo_index = ($last_pseudo_index + 1);
-        }
-    }
     if (array_key_exists('from_user_profile_image_url', $data) && ($data['from_user_profile_image_url'] != NULL)) {
         $data['from_user_profile_image_url'] = "Omitted, see original table";
     }
     if (array_key_exists('from_user_url', $data) && ($data['from_user_url'] != NULL)) {
         $data['from_user_url'] = "Omitted, see original table";
+    }
+    if (array_key_exists('text', $data) && ($data['text'] != NULL)) {
+        $regexp = '/(^|[^@\w])@(\w{1,15})\b/';
+        preg_match_all($regexp, $data['text'], $matches);
+        foreach ($matches[0] as $key => $value) {
+            $mask = array_search($value, array_column($pseudo_list, 'original_data' ));
+                if ($mask) {
+                    $data['text'] = str_replace($value, " ".($last_pseudo_index+1), $data['text']);            
+                } else {
+                    $newData = array(
+                        'original_data' => $value,
+                        'fieldtype' => 'Mention in text'
+                    );
+                    $pseudo_list[($last_pseudo_index+1)] = $newData;
+                    $message = str_replace($value, " ".($last_pseudo_index+1), $data['text']);         
+                    $last_pseudo_index = ($last_pseudo_index+1);
+                }
+            }
     }
     save_pseudonymized_data($pseudo_list, $insert_start_value , $last_pseudo_index);
     return $data;
