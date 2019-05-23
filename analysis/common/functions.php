@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../../common/functions.php';   // include common functions file
+require_once __DIR__ . '/pseudonymization.php';
 
 $connection = false;
 // PHP7
@@ -528,6 +529,8 @@ function generate($what, $filename) {
     $rec->execute();
     $res = $rec->fetch(PDO::FETCH_ASSOC);
 
+
+    
     // get frequencies
     if ($what == "hashtag") {
         $results = frequencyTable("hashtags", "text");
@@ -546,18 +549,24 @@ function generate($what, $filename) {
         // get slice and its min and max time
         $rec = $dbh->prepare($sql);
         $rec->execute();
+        
+        
         while ($res = $rec->fetch(PDO::FETCH_ASSOC)) {
+
             $tweets[] = $res['text'];
             $ids[] = $res['id'];
             $times[] = $res['created_at'];
             $from_user_names[] = strtolower($res['from_user_name']);
             $sources[] = strtolower($res['source']);
         }
+        $pseudonymized_bool = is_pseudonymized($esc['mysql']['dataset']);
 
         // extract desired things ($what) and group per interval
         foreach ($tweets as $key => $tweet) {
             $time = $times[$key];
-
+                if ($pseudonymized_bool == 1) {
+                $res = pseudonymize($res);
+            }
             switch ($interval) {
                 case "minute":
                     $group = strftime("%Y-%m-%d %Hh %Mm", strtotime($time));

@@ -158,17 +158,7 @@ if (defined('ANALYSIS_URL'))
         var bool = "<?php echo is_admin() ?>"; 
 		document.getElementById("pseudonymized_choice").onclick = function() {
 			document.getElementById("pseudonymized").innerHTML = "Selected bin is pseudonymized" ;
-        //    if (bool) {
-        //        document.getElementById("toggleexportheader").style.visibility = "visible";    
-        //    //    alert("Fiscus");
-        //    //    document.getElementById("toggleexportheader").style.visibility = "visible";
-        //    //    document.getElementById("toggleexportbutton").style.visibility = "visible";
-		//	} else {
-        //    //    alert("non-admin");
-        //    //    document.getElementById("toggleexportbutton").style.visibility = "block";
-        //    //    document.getElementById("toggleexportheader").style.visibility = "block";
-//
-        //    }
+
         }
 		document.getElementById("non_pseudonymized_choice").onclick = function() {
 			document.getElementById("pseudonymized").innerHTML = "" ;
@@ -728,7 +718,7 @@ foreach ($linedata as $key => $value) {
 
                     <h3>Hashtag-user activity</h3>
                     <div class="txt_desc">Lists hashtags, the number of tweets with that hashtag, the number of distinct users tweeting with that hashtag, the number of distinct mentions tweeted together with the hashtag, and the total number of mentions tweeted together with the hashtag.</div>
-                    <div class="txt_desc">Use: explor user-hashtag activity.</div>
+                    <div class="txt_desc">Use: explore user-hashtag activity.</div>
                     <div class="txt_link"> &raquo;  <a href="" onclick="$('#whattodo').val('mod.hashtag_user_activity'); sendUrl('mod.hashtag_user_activity.php');return false;">launch</a></div>
 
                     <hr />

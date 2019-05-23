@@ -1,5 +1,5 @@
 <?php
-require __DIR__ . '/functions.php';
+require_once __DIR__ . '/functions.php';
 
 function fetch_pseudonymized_data(){
     $pseudo_list = array();
@@ -102,21 +102,27 @@ function pseudonymize($data) {
     if (array_key_exists('from_user_url', $data) && ($data['from_user_url'] != NULL)) {
         $data['from_user_url'] = "Omitted, see original table";
     }
+    // Check if there exists any key for the $data array and that key isn't null.
     if (array_key_exists('text', $data) && ($data['text'] != NULL)) {
-        //$regexp = '/(^|[^@\w])@(\w{1,15})\b/';
-        $regexp = '/\s([@][\w_-]+)/';
+        $regexp = '/([@][\w_-]+)/';
+        // Search for all occurrences of the regexp in the data['text'] field. Return the matching strings in the array $matches
+        $matches = array();
         preg_match_all($regexp, $data['text'], $matches);
+        // For every match given in the $matches array.
         foreach ($matches[0] as $key => $value) {
+            // Search if the match(now saved as $value) is already pseudonymized.
             $mask = array_search($value, array_column($pseudo_list, 'original_data' ));
-                if ($mask) {
-                    $data['text'] = str_replace($value, " ".($last_pseudo_index+1), $data['text']);            
+            // If it is pseudonymized, then use the already existing pseudonymization key again.
+            if ($mask) {
+                    $data['text'] = str_replace($value, "@".($last_pseudo_index), $data['text'])    ;            
                 } else {
+                    // If not already existing in the pseudonymisation table, add it and psseudonymize it.
                     $newData = array(
                         'original_data' => $value,
                         'fieldtype' => 'Mention in text'
                     );
                     $pseudo_list[($last_pseudo_index+1)] = $newData;
-                    $message = str_replace($value, " ".($last_pseudo_index+1), $data['text']);         
+                    $data['text'] = str_replace($value, "@".($last_pseudo_index+1), $data['text']);         
                     $last_pseudo_index = ($last_pseudo_index+1);
                 }
             }

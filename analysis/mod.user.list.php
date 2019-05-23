@@ -1,7 +1,8 @@
 <?php
 require_once __DIR__ . '/common/config.php';
-require_once __DIR__ . '/common/functions.php';
+//require_once __DIR__ . '/common/functions.php';
 require_once __DIR__ . '/common/CSV.class.php';
+require_once __DIR__ . '/common/pseudonymization.php';
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -36,6 +37,7 @@ require_once __DIR__ . '/common/CSV.class.php';
         $collation = current_collation();
         $filename = get_filename_for_export("user.list");
         $csv = new CSV($filename, $outputformat);
+    
 
         // tweets per user
         $sql = "SELECT t.from_user_id,t.from_user_name COLLATE $collation as from_user_name,t.from_user_lang,t.from_user_tweetcount,t.from_user_followercount,t.from_user_friendcount,t.from_user_listed,t.from_user_utcoffset,t.from_user_verified,count(t.id) as tweetcount, ";
@@ -49,7 +51,8 @@ require_once __DIR__ . '/common/CSV.class.php';
         while ($res = $rec->fetch(PDO::FETCH_ASSOC)) {
             $array[$res['datepart']][$res['from_user_name']] = $res;
         }
-
+        $pseudonymized_bool = is_pseudonymized($esc['mysql']['dataset']);
+        
         // retweets per user
         $sql = "SELECT count(t.retweet_id) as count, t.from_user_name COLLATE $collation as from_user_name, ";
         $sql .= sqlInterval();
@@ -63,7 +66,7 @@ require_once __DIR__ . '/common/CSV.class.php';
         while ($res = $rec->fetch(PDO::FETCH_ASSOC)) {
             $retweets[$res['datepart']][$res['from_user_name']] = $res['count'];
         }
-
+        
         // mentioning per user
         $sql = "SELECT m.from_user_name COLLATE $collation as from_user_name, count(m.from_user_name COLLATE $collation) as count, ";
         $sql .= sqlInterval();
@@ -132,6 +135,9 @@ require_once __DIR__ . '/common/CSV.class.php';
         $csv->writeheader(explode(',', "date,from_user_id,from_user_name,from_user_lang,from_user_tweetcount (all time user queries),from_user_followercount,from_user_friendcount,from_user_listed,from_user_utcoffset,from_user_verified,tweets in data set,retweets by user, mentioning,mentioned,total nr of hashtags,nr of tweets with hashtags"));
         foreach ($array as $date => $user_array) {
             foreach ($user_array as $user => $a) {
+                if ($pseudonymized_bool == 1) {
+                    $a=pseudonymize($a);
+                }
                 $csv->newrow();
                 $csv->addfield($date);
                 $csv->addfield($a["from_user_id"]);
