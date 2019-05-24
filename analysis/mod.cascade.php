@@ -42,8 +42,14 @@ $tabrts = array();
 
 $rec = $dbh->prepare($sql);
 $rec->execute();
-while ($res = $rec->fetch(PDO::FETCH_ASSOC)) {
 
+$pseudonymized_bool = is_pseudonymized($esc['mysql']['dataset']);
+
+
+while ($res = $rec->fetch(PDO::FETCH_ASSOC)) {
+    if ($pseudonymized_bool == 1) {
+        $res=pseudonymize($res);
+    }
 	//print_r($res);
 
     if (!in_array($res["from_user_name"], $tabusers)) {

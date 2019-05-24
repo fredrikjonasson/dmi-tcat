@@ -43,7 +43,13 @@ require_once __DIR__ . '/common/Gexf.class.php';
 
         $rec = $dbh->prepare($sql);
         $rec->execute();
+        
+        $pseudonymized_bool = is_pseudonymized($esc['mysql']['dataset']);
+        
         while ($res = $rec->fetch(PDO::FETCH_ASSOC)) {
+            if ($pseudonymized_bool == 1) {
+                $res=pseudonymize($res);
+            }
             if (!isset($userHashtags[$res['user']][$res['hashtag']]))
                 $userHashtags[$res['user']][$res['hashtag']] = 0;
             $userHashtags[$res['user']][$res['hashtag']]++;

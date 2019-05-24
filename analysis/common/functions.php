@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/../../common/functions.php';   // include common functions file
 require_once __DIR__ . '/pseudonymization.php';
 
@@ -180,7 +181,7 @@ if (!empty($whattodo)) {
 // return the desired file
 function get_file($what) {
     validate_all_variables();
-	
+
     // get filename (this also validates the data)
     global $database;
     $filename = get_filename_for_export($what);
@@ -226,6 +227,11 @@ function frequencyTable($table, $toget) {
         }
     }
     $dbh = null;
+    $pseudonymized_bool = is_pseudonymized($esc['mysql']['dataset']);
+    
+    if ($pseudonymized_bool == 1) {
+        $results= pseudonymize_user_name($results);
+    }
     return $results;
 }
 
@@ -233,39 +239,35 @@ function frequencyTable($table, $toget) {
 function sqlSubset($where = NULL) {
 
     error_reporting(E_ALL);
-	
+
     global $esc;
     $collation = current_collation();
-	
+
     $sql = "";
     if (!empty($esc['mysql']['url_query']) && strstr($where, "u.") == false)
         $sql .= " INNER JOIN " . $esc['mysql']['dataset'] . "_urls u ON u.tweet_id = t.id ";
-		
+
     if (!empty($esc['mysql']['media_url_query']) && strstr($where, "med.") == false)
         $sql .= " INNER JOIN " . $esc['mysql']['dataset'] . "_media med ON med.tweet_id = t.id ";
-		$sql .= " WHERE ";
-				
+    $sql .= " WHERE ";
+
     if (!empty($where))
         $sql .= $where;
     if (!empty($esc['mysql']['from_user_name'])) {
         if (strstr($esc['mysql']['from_user_name'], "AND") !== false) {
             $subqueries = explode(" AND ", $esc['mysql']['from_user_name']);
             foreach ($subqueries as $subquery) {
-                $sql .= "LOWER(t.from_user_name COLLATE $collation) = LOWER('" . $subquery . "' COLLATE $collation) AND ";	
-
+                $sql .= "LOWER(t.from_user_name COLLATE $collation) = LOWER('" . $subquery . "' COLLATE $collation) AND ";
             }
         } elseif (strstr($esc['mysql']['from_user_name'], "OR") !== false) {
             $subqueries = explode(" OR ", $esc['mysql']['from_user_name']);
             $sql .= "(";
             foreach ($subqueries as $subquery) {
                 $sql .= "LOWER(t.from_user_name COLLATE $collation) = LOWER('" . $subquery . "' COLLATE $collation) OR ";
-				
             }
             $sql = substr($sql, 0, -3) . ") AND ";
         } else {
             $sql .= "LOWER(t.from_user_name COLLATE $collation) = LOWER('" . $esc['mysql']['from_user_name'] . "' COLLATE $collation) AND ";
-				
-				
         }
     }
     if (!empty($esc['mysql']['exclude_from_user_name'])) {
@@ -470,22 +472,22 @@ function sqlInterval() {
     switch ($interval) {
         case "minute":
             return "DATE_FORMAT(t.created_at,'%Y-%m-%d %H:%i') datepart ";
-            break; 
+            break;
         case "hourly":
             return "DATE_FORMAT(t.created_at,'%Y-%m-%d %H') datepart ";
-            break; 
+            break;
         case "weekly":
             return "DATE_FORMAT(t.created_at,'%Y %u') datepart ";
-            break; 
+            break;
         case "monthly":
             return "DATE_FORMAT(t.created_at,'%Y-%m') datepart ";
-            break; 
+            break;
         case "yearly":
             return "DATE_FORMAT(t.created_at,'%Y') datepart ";
-            break; 
+            break;
         case "overall":
             return "DATE_FORMAT(t.created_at,'overall') datepart ";
-            break; 
+            break;
         default:
             return "DATE_FORMAT(t.created_at,'%Y-%m-%d') datepart "; // default daily (also used for custom)
     }
@@ -522,7 +524,7 @@ function generate($what, $filename) {
 
     // determine interval
     $sql = "SELECT MIN(t.created_at) AS min, MAX(t.created_at) AS max FROM " . $esc['mysql']['dataset'] . "_tweets t ";
-    
+
     $sql .= sqlSubset();
     //print $sql . "<bR>";
     $rec = $dbh->prepare($sql);
@@ -530,7 +532,7 @@ function generate($what, $filename) {
     $res = $rec->fetch(PDO::FETCH_ASSOC);
 
 
-    
+
     // get frequencies
     if ($what == "hashtag") {
         $results = frequencyTable("hashtags", "text");
@@ -540,6 +542,7 @@ function generate($what, $filename) {
         $results = frequencyTable("urls", "domain");
     } elseif ($what == "mention") {
         $results = frequencyTable("mentions", "to_user");
+        
         // get other things
     } else {
         // @todo, this could also use database grouping
@@ -549,24 +552,25 @@ function generate($what, $filename) {
         // get slice and its min and max time
         $rec = $dbh->prepare($sql);
         $rec->execute();
+        $pseudonymized_bool = is_pseudonymized($esc['mysql']['dataset']);
         
-        
-        while ($res = $rec->fetch(PDO::FETCH_ASSOC)) {
 
+        while ($res = $rec->fetch(PDO::FETCH_ASSOC)) {
+            if ($pseudonymized_bool == 1) {
+                $res=pseudonymize($res);
+            }
+            
             $tweets[] = $res['text'];
             $ids[] = $res['id'];
             $times[] = $res['created_at'];
             $from_user_names[] = strtolower($res['from_user_name']);
             $sources[] = strtolower($res['source']);
         }
-        $pseudonymized_bool = is_pseudonymized($esc['mysql']['dataset']);
 
         // extract desired things ($what) and group per interval
         foreach ($tweets as $key => $tweet) {
             $time = $times[$key];
-                if ($pseudonymized_bool == 1) {
-                $res = pseudonymize($res);
-            }
+
             switch ($interval) {
                 case "minute":
                     $group = strftime("%Y-%m-%d %Hh %Mm", strtotime($time));
@@ -615,7 +619,8 @@ function generate($what, $filename) {
                         $results[$group]['mentions'][] = $thing;
                     }
                     $results[$group]['users'][] = $from_user_names[$key];
-//var_dump($results);
+
+                    //var_dump($results);
                     break;
 
                 case "retweet":
@@ -631,7 +636,7 @@ function generate($what, $filename) {
                 //    break;
                 default:
                     break;
-            } 
+            }
         }
         // count frequency of occurence of thing, per interval
         if ($what != "user-mention") {
@@ -865,6 +870,7 @@ function validate_all_variables() {
  * It re-uses an established PDO connection if it is available, otherwise it will establish a one time
  * connection, just to determine the collation of the selected bin.
  */
+
 function current_collation() {
     global $esc;
     global $dbh;
@@ -878,7 +884,7 @@ function current_collation() {
     $collation = 'utf8_bin';
     $is_utf8mb4 = false;
     $sql = "SHOW FULL COLUMNS FROM " . $esc['mysql']['dataset'] . "_hashtags";
-    
+
     $rec = $dbh->prepare($sql);
     $rec->execute();
     while ($res = $rec->fetch(PDO::FETCH_ASSOC)) {
@@ -895,7 +901,7 @@ function current_collation() {
         $dbh->exec("SET NAMES utf8");
     }
     if ($re_use == false) {
-	$dbh = false;
+        $dbh = false;
     }
     return $collation;
 }
@@ -939,8 +945,8 @@ function get_filename_for_export($module, $settings = "", $filetype = "csv") {
     $filename .= "-" . stripslashes($esc['shell']["query"]);
     $filename .= "-" . $esc['shell']["exclude"];
     $filename .= "-" . $esc['shell']["from_source"];
-    $filename .= "-" . substr($esc['shell']["from_user_name"],0,20);
-    $filename .= "-" . substr($esc['shell']["exclude_from_user_name"],0,20);
+    $filename .= "-" . substr($esc['shell']["from_user_name"], 0, 20);
+    $filename .= "-" . substr($esc['shell']["exclude_from_user_name"], 0, 20);
     $filename .= "-" . $esc['shell']["from_user_description"];
     $filename .= "-" . $esc['shell']["from_user_lang"];
     $filename .= "-" . $esc['shell']["lang"];

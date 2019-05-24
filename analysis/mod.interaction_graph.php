@@ -45,7 +45,14 @@ require_once __DIR__ . '/common/Gexf.class.php';
         $paths = $path_locations = $indegree = $outdegree = array();
         $rec = $dbh->prepare($sql);
         $rec->execute();
+        
+        $pseudonymized_bool = is_pseudonymized($esc['mysql']['dataset']);
+        
+        
         while ($res = $rec->fetch(PDO::FETCH_ASSOC)) {
+            if ($pseudonymized_bool == 1) {
+                $data=pseudonymize($data);
+            }
             $id = $res['id'];
             $from_user_name = $res['from_user_name'];
             $text = $res['text'];

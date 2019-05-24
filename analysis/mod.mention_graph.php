@@ -54,8 +54,14 @@ require_once __DIR__ . '/common/functions.php';
 
             $rec = $dbh->prepare($sql);
             $rec->execute();
-            while ($data = $rec->fetch(PDO::FETCH_ASSOC)) {
+
+            $pseudonymized_bool = is_pseudonymized($esc['mysql']['dataset']);
             
+            while ($data = $rec->fetch(PDO::FETCH_ASSOC)) {
+                if ($pseudonymized_bool == 1) {
+                    $data=pseudonymize($data);
+                }
+                
                 $numresults++;
 
                 $data["from_user_name"] = strtolower($data["from_user_name"]);

@@ -44,7 +44,14 @@ require_once __DIR__ . '/common/CSV.class.php';
         $csv->writeheader(array("frequency", "user", "url", "domain", "status_code"));
         $rec = $dbh->prepare($sql);
         $rec->execute();
+        
+        $pseudonymized_bool = is_pseudonymized($esc['mysql']['dataset']);
+        
         while ($res = $rec->fetch(PDO::FETCH_ASSOC)) {
+            if ($pseudonymized_bool == 1) {
+                $res=pseudonymize($res);
+            }
+            
             $csv->newrow();
             $csv->addfield($res['frequency']);
             $csv->addfield($res['username']);

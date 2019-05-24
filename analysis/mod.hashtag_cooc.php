@@ -47,8 +47,13 @@ $uselocalresults = false;   // @todo used as hack for experiment in first issue 
         //print $sql . "<bR>";
         $rec = $dbh->prepare($sql);
         $rec->execute();
+        
+        $pseudonymized_bool = is_pseudonymized($esc['mysql']['dataset']);
+        
         while ($res = $rec->fetch(PDO::FETCH_ASSOC)) {
-
+            if ($pseudonymized_bool == 1) {
+                $res=pseudonymize($res);
+            }
             $word = $res['h1'];
             $coword->distinctUsersForWord[$word] = $res['d'];
             $coword->userDiversity[$word] = round(($res['d'] / $res['c']) * 100, 2);
