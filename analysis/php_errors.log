@@ -1,0 +1,14 @@
+[22-May-2019 20:17:43 UTC] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'twittercapture._hashtags' doesn't exist in /var/www/dmi-tcat/analysis/common/functions.php:874
+Stack trace:
+#0 /var/www/dmi-tcat/analysis/common/functions.php(874): PDOStatement->execute()
+#1 /var/www/dmi-tcat/analysis/common/functions.php(237): current_collation()
+#2 /var/www/dmi-tcat/analysis/index.php(367): sqlSubset()
+#3 {main}
+  thrown in /var/www/dmi-tcat/analysis/common/functions.php on line 874
+[25-May-2019 14:59:34 UTC] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'twittercapture._hashtags' doesn't exist in /var/www/dmi-tcat/analysis/common/functions.php:889
+Stack trace:
+#0 /var/www/dmi-tcat/analysis/common/functions.php(889): PDOStatement->execute()
+#1 /var/www/dmi-tcat/analysis/common/functions.php(244): current_collation()
+#2 /var/www/dmi-tcat/analysis/index.php(357): sqlSubset()
+#3 {main}
+  thrown in /var/www/dmi-tcat/analysis/common/functions.php on line 889

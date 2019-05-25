@@ -2,6 +2,10 @@
 
 require_once __DIR__ . '/functions.php';
 
+/**
+* Fetch the data needed for de-pseudonymization from the database, and save it to a multidimensional array. 
+*
+*/
 function fetch_pseudonymized_data() {
     $pseudo_list = array();
     //Fetching the pseudonymize table and buffer it in an array.
@@ -29,6 +33,13 @@ function fetch_pseudonymized_data() {
     return $pseudo_list;
 }
 
+/**
+* Save the array consisting of the original data and the corresponding pseudonymisation number. By using start value and last value the function makes sure to only add the entries in the array that is not already in the database. Startvalue - Lastvalue = content added.
+*
+* @param array $pseudo_list An array consisting of the original data and pseudonymization ID.
+* @param integer $insert_start_value the value that corresponds to the last entry in the database.
+* @param integer $last_pseudo_index the value that corresponds to the index of the last added value to the array. 
+*/
 function save_pseudonymized_data($pseudo_list, $insert_start_value, $last_pseudo_index) {
     $dbh = pdo_connect();
 
@@ -48,7 +59,11 @@ function save_pseudonymized_data($pseudo_list, $insert_start_value, $last_pseudo
     $dbh = NULL;
 }
 
-// The function queries the database to determine however the chosen dataset is flagged for pseudonymization or not.
+/**
+* Querys the database with the given dataset to see whether the actual dataset is marked for pseudonymization or not.
+*
+* @param string $dataset A string consisting of the name of the database that we want to check up whether it is flagged for pseudonymization.
+*/
 function is_pseudonymized($dataset) {
     $dbh = pdo_connect();
     $sql = "SELECT pseudonymization FROM tcat_query_bins WHERE querybin ='" . $dataset . "';";
@@ -60,6 +75,16 @@ function is_pseudonymized($dataset) {
     return $boolindicator;
 }
 
+
+/**
+* Pseudonymizes a certain value (or from a tweet perspective, field) in the given array-based copy of the saved pseudonymisation data. It either fetches the existing pseudonymisation value our creates a new one.
+*
+* 
+* @param array $pseudo_list An array copying the saved content on the database for modification outside the database.
+* @param array $data An array consisting of the information that we want to pseoudonymize.
+* @param string $datakey A string consisting of the name of the key in the array which corresponding value we want to change.
+* @param int $last_pseudo_index A integer keeping track of the last added value in the $pseudo_list array making sure that we dont overwrite anything.
+*/
 function pseudonymize_field($pseudo_list, $data, $datakey, $last_pseudo_index) {
     if (array_key_exists($datakey, $data) && ($data[$datakey] != NULL)) {
         $mask = array_search($data[$datakey], array_column($pseudo_list, 'original_data'));
@@ -83,6 +108,12 @@ function pseudonymize_field($pseudo_list, $data, $datakey, $last_pseudo_index) {
     return $argument_array;
 }
 
+
+/**
+* A special variant of the function above that works with more frequiency oriented tables. The function works in lion-part as pseudonymize_field but for a specific field.
+*
+* @param array $results an array consisting of a specific array from a specific function where we want to pseudonymize a specific value. 
+*/
 function pseudonymize_user_name($results) {
     $pseudo_list = fetch_pseudonymized_data();
     end($pseudo_list);
@@ -113,6 +144,11 @@ function pseudonymize_user_name($results) {
     return $new_results;
 }
 
+/**
+* A general function that takes an array consisting of multiple tweet-related keys and corresponds some of the corresponding values by sending them to the pseudonymize_field function above. 
+*
+* @param array $data an array consisting of the information that we have about a collected tweet where some of the information is of a specific kind that we want to pseudonymize. 
+*/
 function pseudonymize($data) {
     $pseudo_list = fetch_pseudonymized_data();
     end($pseudo_list);
