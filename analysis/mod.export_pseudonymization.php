@@ -15,6 +15,7 @@ $sql = "SELECT * FROM tcat_pseudonymized_data;";
 $rec = $dbh -> prepare($sql);
 $rec -> execute();
 
+// take each field from the pseudonymization table and add each field.
 while ($data = $rec->fetch(PDO::FETCH_ASSOC)) {
     
     $csv->newrow();

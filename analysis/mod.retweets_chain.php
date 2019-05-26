@@ -48,7 +48,7 @@ require_once __DIR__ . '/common/pseudonymization.php';
         $sql .= "GROUP BY text HAVING count >= " . $min_nr_of_nodes . " ORDER BY count DESC";
         $rec = $dbh->prepare($sql);
         $rec->execute();
-
+        // Create a boolean variable that gives whether a dataset is marked for pseudonymization or not.
         $pseudonymized_bool = is_pseudonymized($esc['mysql']['dataset']);
 
         while ($res = $rec->fetch(PDO::FETCH_ASSOC)) {
@@ -62,7 +62,7 @@ require_once __DIR__ . '/common/pseudonymization.php';
             $rec3->bindParam(':text', $text, PDO::PARAM_STR);
             $rec3->execute();
             while ($data = $rec3->fetch(PDO::FETCH_ASSOC)) {
-                
+                // Use that boolean value to determine whether we should send the fetched dataparts to the function pseudonymized.
                 if ($pseudonymized_bool == 1) {
                     $data=pseudonymize($data);
                 }

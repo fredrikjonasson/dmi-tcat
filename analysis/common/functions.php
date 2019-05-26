@@ -227,8 +227,11 @@ function frequencyTable($table, $toget) {
         }
     }
     $dbh = null;
+    
+    // Create a boolean variable that gives whether a dataset is marked for pseudonymization or not.
     $pseudonymized_bool = is_pseudonymized($esc['mysql']['dataset']);
     
+    // Use that boolean value to determine whether we should send the fetched dataparts to the function pseudonymized.
     if ($pseudonymized_bool == 1) {
         $results= pseudonymize_user_name($results);
     }

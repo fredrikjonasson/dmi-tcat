@@ -25,12 +25,16 @@ require_once __DIR__ . '/common/pseudonymization.php';
 
         $rec = $dbh->prepare($sql);
         $rec->execute();
+        
+        // Create a boolean variable that gives whether a dataset is marked for pseudonymization or not.
         $pseudonymized_bool = is_pseudonymized($esc['mysql']['dataset']);
 
-        while ($data = $rec->fetch(PDO::FETCH_ASSOC)) {
+        while ($data = $rec->fetch(PDO::FETCH_ASSOC)) {         
+            // Use that boolean value to determine whether we should send the fetched dataparts to the function pseudonymized.
             if ($pseudonymized_bool == 1) {
                 $data=pseudonymize($data);
             }
+            
             $csv->newrow();    
             $csv->addfield($data['id'], 'integer');
             $csv->addfield($data['hashtag'], 'string');

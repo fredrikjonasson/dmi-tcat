@@ -51,6 +51,7 @@ require_once __DIR__ . '/common/pseudonymization.php';
         while ($res = $rec->fetch(PDO::FETCH_ASSOC)) {
             $array[$res['datepart']][$res['from_user_name']] = $res;
         }
+        // Create a boolean variable that gives whether a dataset is marked for pseudonymization or not.
         $pseudonymized_bool = is_pseudonymized($esc['mysql']['dataset']);
         
         // retweets per user
@@ -135,6 +136,7 @@ require_once __DIR__ . '/common/pseudonymization.php';
         $csv->writeheader(explode(',', "date,from_user_id,from_user_name,from_user_lang,from_user_tweetcount (all time user queries),from_user_followercount,from_user_friendcount,from_user_listed,from_user_utcoffset,from_user_verified,tweets in data set,retweets by user, mentioning,mentioned,total nr of hashtags,nr of tweets with hashtags"));
         foreach ($array as $date => $user_array) {
             foreach ($user_array as $user => $a) {
+                // Use that boolean value to determine whether we should send the fetched dataparts to the function pseudonymized.
                 if ($pseudonymized_bool == 1) {
                     $a=pseudonymize($a);
                 }

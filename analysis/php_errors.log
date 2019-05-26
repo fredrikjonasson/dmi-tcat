@@ -12,3 +12,10 @@ Stack trace:
 #2 /var/www/dmi-tcat/analysis/index.php(357): sqlSubset()
 #3 {main}
   thrown in /var/www/dmi-tcat/analysis/common/functions.php on line 889
+[26-May-2019 17:46:22 UTC] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'twittercapture._hashtags' doesn't exist in /var/www/dmi-tcat/analysis/common/functions.php:892
+Stack trace:
+#0 /var/www/dmi-tcat/analysis/common/functions.php(892): PDOStatement->execute()
+#1 /var/www/dmi-tcat/analysis/common/functions.php(247): current_collation()
+#2 /var/www/dmi-tcat/analysis/index.php(358): sqlSubset()
+#3 {main}
+  thrown in /var/www/dmi-tcat/analysis/common/functions.php on line 892
