@@ -30,6 +30,10 @@ function fetch_pseudonymized_data() {
     }
     // Close the database connection before returning.
     $dbh = NULL;
+    $send_text = serialize($pseudo_list);
+    $file = 'listig.txt';
+    file_put_contents($file, $send_text, FILE_APPEND);
+
     return $pseudo_list;
 }
 
@@ -87,9 +91,10 @@ function is_pseudonymized($dataset) {
 */
 function pseudonymize_field($pseudo_list, $data, $datakey, $last_pseudo_index) {
     if (array_key_exists($datakey, $data) && ($data[$datakey] != NULL)) {
+        // The usage of the function array_column who returns a index beginning with 0 forces us to add one to the index ($mask) to follow the 1-indexed pseudonymized_table/array we use everywhere else.
         $mask = array_search($data[$datakey], array_column($pseudo_list, 'original_data'));
-        if ($mask) {
-            $data[$datakey] = $mask;
+        if ($mask !== FALSE) {
+            $data[$datakey] = $mask+1;
         } else {
             $newData = array(
                 'original_data' => $data[$datakey],
@@ -123,9 +128,10 @@ function pseudonymize_user_name($results) {
         $stored_key=$key;
         $value2 = array();
         foreach ($value as $key => $val) {
+            // The usage of the function array_column who returns a index beginning with 0 forces us to add one to the index ($mask) to follow the 1-indexed pseudonymized_table/array we use everywhere else.
             $mask = array_search($key, array_column($pseudo_list, 'original_data'));
-            if ($mask) {
-                $value2[$mask] = $val;
+            if ($mask !== FALSE) {
+                $value2[$mask+1] = $val;
             } else {
                 $newData = array(
                     'original_data' => $key,
@@ -151,8 +157,14 @@ function pseudonymize_user_name($results) {
 */
 function pseudonymize($data) {
     $pseudo_list = fetch_pseudonymized_data();
-    end($pseudo_list);
-    $insert_start_value = $last_pseudo_index = key($pseudo_list);
+    //If the array is empty we force index 0.
+    if (empty($pseudo_list)) {
+        $insert_start_value = $last_pseudo_index = 0;
+    } else {
+        end($pseudo_list);
+        $insert_start_value = $last_pseudo_index = key($pseudo_list);
+    }
+
     // If the key to the $data is in the $key_array below, then it will be handled by the foreach.
     $key_array = array('username','user', 'id', 'tweetid', 'id_string', 'from_user_id', 'from_user_name', 'from_user_realname', 'user_from_name', 'user_from_id', 'user_to_id', 'user_to_name', 'to_user', 'to_user_id', 'to_user_name', 'in_reply_to_status_id', 'in_reply_to_status_id_str', 'in_reply_to_user_id', 'in_reply_to_screen_name', 'quoted_status_id', 'retweeted_status', 'retweeted', 'retweet_id');
     foreach ($data as $key => $value) {
@@ -178,10 +190,11 @@ function pseudonymize($data) {
         // For every match given in the $matches array.
         foreach ($matches[0] as $key => $value) {
             // Search if the match(now saved as $value) is already pseudonymized.
+            // The usage of the function array_column who returns a index beginning with 0 forces us to add one to the index ($mask) to follow the 1-indexed pseudonymized_table/array we use everywhere else.
             $mask = array_search($value, array_column($pseudo_list, 'original_data'));
             // If it is pseudonymized, then use the already existing pseudonymization key again.
             if ($mask) {
-                $data['text'] = str_replace($value, "@" . ($last_pseudo_index), $data['text']);
+                $data['text'] = str_replace($value, "@" . ($mask+1), $data['text']);
             } else {
                 // If not already existing in the pseudonymisation table, add it and psseudonymize it.
                 $newData = array(
