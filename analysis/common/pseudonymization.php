@@ -95,9 +95,9 @@ function pseudonymize_field($pseudo_list, $data, $datakey, $last_pseudo_index) {
                 'original_data' => $data[$datakey],
                 'fieldtype' => $datakey
             );
-            $pseudo_list[($last_pseudo_index + 1)] = $newData;
-            $data[$datakey] = ($last_pseudo_index + 1);
-            $last_pseudo_index = ($last_pseudo_index + 1);
+                $pseudo_list[($last_pseudo_index + 1)] = $newData;
+                $data[$datakey] = ($last_pseudo_index + 1);
+                $last_pseudo_index = ($last_pseudo_index + 1);    
         }
     }
     $argument_array = array(
