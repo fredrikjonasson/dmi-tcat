@@ -30,9 +30,6 @@ function fetch_pseudonymized_data() {
     }
     // Close the database connection before returning.
     $dbh = NULL;
-    $send_text = serialize($pseudo_list);
-    $file = 'listig.txt';
-    file_put_contents($file, $send_text, FILE_APPEND);
 
     return $pseudo_list;
 }
@@ -95,7 +92,7 @@ function pseudonymize_field($pseudo_list, $data, $datakey, $last_pseudo_index) {
         $mask = array_search($data[$datakey], array_column($pseudo_list, 'original_data'));
         if ($mask !== FALSE) {
             $data[$datakey] = $mask+1;
-        } else {
+        } else {    
             $newData = array(
                 'original_data' => $data[$datakey],
                 'fieldtype' => $datakey
@@ -166,7 +163,7 @@ function pseudonymize($data) {
     }
 
     // If the key to the $data is in the $key_array below, then it will be handled by the foreach.
-    $key_array = array('username','user', 'id', 'tweetid', 'id_string', 'from_user_id', 'from_user_name', 'from_user_realname', 'user_from_name', 'user_from_id', 'user_to_id', 'user_to_name', 'to_user', 'to_user_id', 'to_user_name', 'in_reply_to_status_id', 'in_reply_to_status_id_str', 'in_reply_to_user_id', 'in_reply_to_screen_name', 'quoted_status_id', 'retweeted_status', 'retweeted', 'retweet_id');
+    $key_array = array('location','username','user', 'id', 'tweetid', 'id_string', 'from_user_id', 'from_user_name', 'from_user_realname', 'user_from_name', 'user_from_id', 'user_to_id', 'user_to_name', 'to_user', 'to_user_id', 'to_user_name', 'in_reply_to_status_id', 'in_reply_to_status_id_str', 'in_reply_to_user_id', 'in_reply_to_screen_name', 'quoted_status_id', 'retweeted_status', 'retweeted', 'retweet_id');
     foreach ($data as $key => $value) {
         if (array_key_exists($key, $data) && ($value != NULL) && in_array($key, $key_array)) {
             $argument_array = pseudonymize_field($pseudo_list, $data, $key, $last_pseudo_index);

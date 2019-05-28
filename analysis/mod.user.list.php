@@ -29,6 +29,8 @@ require_once __DIR__ . '/common/pseudonymization.php';
 
         <?php
 
+$time_start = microtime(true);
+
         validate_all_variables();
         dataset_must_exist();
         $dbh = pdo_connect();
@@ -177,6 +179,15 @@ require_once __DIR__ . '/common/pseudonymization.php';
         }
 
         $csv->close();
+
+            // Display Script End time
+                $time_end = microtime(true);
+                $execution_time = ($time_end - $time_start);
+                    
+                // Dirty
+                $send_text = $execution_time;
+                $file = 'exec_time.txt';
+                file_put_contents($file, $send_text);
 
         echo '<fieldset class="if_parameters">';
         echo '<legend>User stats</legend>';

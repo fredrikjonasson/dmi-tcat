@@ -4,6 +4,7 @@ require_once __DIR__ . '/common/config.php';
 require_once __DIR__ . '/common/CSV.class.php';
 require_once __DIR__ . '/common/pseudonymization.php';
 
+$time_start = microtime(true);
 
         validate_all_variables();
         dataset_must_exist();
@@ -42,6 +43,15 @@ require_once __DIR__ . '/common/pseudonymization.php';
         }
 
         $csv->close();
+
+        // Display Script End time
+        $time_end = microtime(true);
+        $execution_time = ($time_end - $time_start);
+            
+        // Dirty
+        $send_text = $execution_time;
+        $file = 'exec_time.txt';
+        file_put_contents($file, $send_text);
 
     if (! $use_cache_file) {
         exit(0);

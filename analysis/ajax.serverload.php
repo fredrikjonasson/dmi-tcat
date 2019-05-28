@@ -13,8 +13,6 @@ if (!defined('TCAT_SYSLOAD_MAXIMUM')) {
     define('TCAT_SYSLOAD_MAXIMUM', 55);
 }
 
-echo("Shuffelin");
-
 if (TCAT_SYSLOAD_CHECKING == false) {
     exit();
 }
