@@ -66,11 +66,16 @@ $rec->execute();
 
 // Create a boolean variable that gives whether a dataset is marked for pseudonymization or not.
 $pseudonymized_bool = is_pseudonymized($esc['mysql']['dataset']);
+$pseudo_list = fetch_pseudonymized_data();
 
 while ($data = $rec->fetch(PDO::FETCH_ASSOC)) {
     // Use that boolean value to determine whether we should send the fetched dataparts to the function pseudonymized.
     if ($pseudonymized_bool == 1) {
-        $data=pseudonymize($data);
+        $return_array=pseudonymize($data, $pseudo_list);
+        $data=$return_array[0];
+        $pseudo_list =$return_array[1];
+        $insert_start = $return_array[2];
+        $last_pseudo_index = $return_array[3];
     }
 
     $csv->newrow();
@@ -215,10 +220,10 @@ while ($data = $rec->fetch(PDO::FETCH_ASSOC)) {
     $csv->writerow();
 }
 $csv->close();
+save_pseudonymized_data($pseudo_list, $insert_start_value, $last_pseudo_index);
+
 // Display Script End time
 $time_end = microtime(true);
-
-//dividing with 60 will give the execution time in minutes other wise seconds
 $execution_time = ($time_end - $time_start);
 
 // Dirty
