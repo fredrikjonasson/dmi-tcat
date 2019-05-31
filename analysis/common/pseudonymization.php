@@ -1,15 +1,17 @@
 <?php
-
 require_once __DIR__ . '/functions.php';
+
 
 
 /**
  * Fetch the data needed for de-pseudonymization from the database, and save it to a multidimensional array. 
  *
  */
+
 function fetch_pseudonymized_data() {
 	global $pseudo_list;		
 	//$pseudo_list = array();
+
 	// If not empty, store a copy of the table in $pseudo_list
 	$dbh = pdo_connect();
 	$sql = "SELECT pseudo_val ,original_data, fieldtype FROM tcat_pseudonymized_data;";
@@ -21,6 +23,7 @@ function fetch_pseudonymized_data() {
 	}
 	// Close the database connection before returning.
 	$dbh = NULL;
+	return $pseudo_list;
 }
 
 /**
@@ -102,21 +105,68 @@ function pseudonymize_field($pseudo_list, $data, $datakey, $last_pseudo_index) {
 	return $argument_array;
 }
 
-function map_maker(&$value, $key){
-	global $pseudo_list;
-	global $last_pseudo_index;
-	$key_array = array('location','username','user', 'id', 'tweetid', 'id_string', 'from_user_id', 'from_user_name', 'from_user_realname', 'user_from_name', 'user_from_id', 'user_to_id', 'user_to_name', 'to_user', 'to_user_id', 'to_user_name', 'in_reply_to_status_id', 'in_reply_to_status_id_str', 'in_reply_to_user_id', 'in_reply_to_screen_name', 'quoted_status_id', 'retweeted_status', 'retweeted', 'retweet_id');
-	if($value != NULL){
-		if(in_array($key, $key_array)){
-			if(is_array($pseudo_list)){
-				$last_pseudo_index = count($pseudo_list);
+function pseudonymize(&$value, $key) {
+	$global_last_pseudo_index = $GLOBALS['last_pseudo_index'];
+	$global_pseudo_list = $GLOBALS['pseudo_list'];
+	//$key_array = array('location' => 1,'username' => 1,'user' =>2 , 'id' =>3 , 'tweetid' => 4, 'id_string'=>1, 'from_user_id'=>1, 'from_user_name'=>1, 'from_user_realname'=>1, 'user_from_name'=>1, 'user_from_id'=>1, 'user_to_id'=>1, 'user_to_name'=>1, 'to_user'=>1, 'to_user_id'=>1, 'to_user_name'=>1, 'in_reply_to_status_id'=>1, 'in_reply_to_status_id_str'=>1, 'in_reply_to_user_id'=>1, 'in_reply_to_screen_name'=>1, 'quoted_status_id'=>1, 'retweeted_status'=>1, 'retweeted'=>1, 'retweet_id'=>1);
+
+	if($value != NULL) {
+		//if(isset(($key_array[$key]))) {			
+			$mask = FALSE;
+			/*for ($i=1; $i <= $global_last_pseudo_index; $i++) {
+				if ($value == $global_pseudo_list[$i][0]) { 
+					$mask = $i;
+					break;
+				}
 			}
-			$pseudo_list[$last_pseudo_index+1] = array($value, $key);
-			$value = $last_pseudo_index + 1;
-			$last_pseudo_index = $last_pseudo_index + 1;
+			if ($mask !== FALSE) {
+				$value = $mask;
+			} else {*/ 
+			$global_pseudo_list[$global_last_pseudo_index+1] = array($value, $key);
+			$value = $global_last_pseudo_index + 1;
+			$global_last_pseudo_index = $global_last_pseudo_index + 1;
+		
+		$GLOBALS['last_pseudo_index'] = $global_last_pseudo_index;
+		$GLOBALS['pseudo_list'] = $global_pseudo_list;
+
+	}		
+		/*if (($key == 'text')) {
+			// Dirty
+			$send_text = $value;
+			$file = 'offsetchase.txt';
+			file_put_contents($file, $send_text);
+
+			$regexp = '/([@][\w_-]+)/';
+			// Search for all occurrences of the regexp in the data['text'] field. Return the matching strings in the array $matches
+			$matches = array();
+			preg_match_all($regexp, $value, $matches);
+			// For every match given in the $matches array.
+			foreach ($matches[0] as $key => $val) {
+				// Search if the match(now saved as $val) is already pseudonymized.
+				// The usage of the function array_column who returns a index beginning with 0 forces us to add one to the index ($mask) to follow the 1-indexed pseudonymized_table/array we use everywhere else.
+				$mask = FALSE;
+				for ($i=1; $i <= $global_last_pseudo_index; $i++) {
+					if ($val == $global_pseudo_list[$i][0]) {
+						$mask = $i;
+						break;
+					}
+				}
+				if ($mask !== FALSE) {
+					$value = str_replace($val, "@" . ($mask), $value);
+				} else {
+					// If not already existing in the pseudonymisation table, add it and pseudonymize it.
+					$newData = array($val, 'Mention in text');
+					$global_pseudo_list[($global_last_pseudo_index + 1)] = $newData;
+					$value = str_replace($val, "@" . ($global_last_pseudo_index+1), $value);
+					$global_last_pseudo_index = ($global_last_pseudo_index + 1);
+				}
+			}
 		}
-	}
+		}*/
+	//$GLOBALS['last_pseudo_index'] = $global_last_pseudo_index;
+	//$GLOBALS['pseudo_list'] = $global_pseudo_list;
 }
+
 /**
  * A special variant of the function above that works with more frequiency oriented tables. The function works in lion-part as pseudonymize_field but for a specific field.
  *
@@ -159,7 +209,7 @@ function pseudonymize_user_name($results) {
  *
  * @param array $data an array consisting of the information that we have about a collected tweet where some of the information is of a specific kind that we want to pseudonymize. 
  */
-function pseudonymize($data, $pseudo_list) {
+function pseudonymize_old($data, $pseudo_list) {
 	//If the array is empty we force index 0.
 	if (empty($pseudo_list)) {
 		$last_pseudo_index = 0;
