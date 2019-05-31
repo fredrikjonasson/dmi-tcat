@@ -9,7 +9,7 @@ require_once __DIR__ . '/functions.php';
  */
 function fetch_pseudonymized_data() {
 	global $pseudo_list;		
-	$pseudo_list = array();
+	//$pseudo_list = array();
 	// If not empty, store a copy of the table in $pseudo_list
 	$dbh = pdo_connect();
 	$sql = "SELECT pseudo_val ,original_data, fieldtype FROM tcat_pseudonymized_data;";
