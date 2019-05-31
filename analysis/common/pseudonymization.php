@@ -3,9 +3,17 @@ require_once __DIR__ . '/functions.php';
 
 
 
+function sql () {
+	$dbh = pdo_connect();
+	$sql = "INSERT INTO tcat_pseudonymized_data(original_data, fieldtype) SELECT from_user_name, 'id' FROM pseudotrack_tweets;";
+	$sql = "UPDATE pseudotrack_tweets PT, tcat_pseudonymized_data TD SET PT.from_user_name = CAST(TD.pseudo_val AS CHAR) WHERE PT.from_user_name = TD.original_data;";
+	$rec = $dbh->prepare($sql);
+	$rec->execute();
+}
 /**
  * Fetch the data needed for de-pseudonymization from the database, and save it to a multidimensional array. 
  *
+
  */
 
 function fetch_pseudonymized_data() {
