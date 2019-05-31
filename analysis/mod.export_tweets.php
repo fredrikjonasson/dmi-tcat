@@ -71,17 +71,18 @@ $rec->execute();
 //$start_pseudo_index = $pseudo_return_array[0];
 //$pseudo_list = $pseudo_return_array[1];
 
-$pseudo_list = array();
+//$pseudo_list = array();
 $pseudo_list = fetch_pseudonymized_data();
-print_r($pseudo_list);
 if(is_array($pseudo_list)){
-$last_pseudo_index = $start_number = count($pseudo_list);
+	$last_pseudo_index = $start_number = count($GLOBALS['pseudo_list']);
 } else {
-	die("pseudo_list ain't an array");
+	// Dirty
+	$send_text = $execution_time;
+	$file = 'notarr.txt';
+	$file_put_contents($file, $send_text);
 }
-
 while ($data = $rec->fetch(PDO::FETCH_ASSOC)) {
-	array_walk($data, 'map_maker');
+	array_walk($data, 'pseudonymize');
 	//$send_text = serialize($array_array);//serialize(array_merge(array_flip($data), $empty_arr  ));
 	//$file = 'combine.txt';
 	//file_put_contents($file, $send_text);
@@ -93,7 +94,7 @@ while ($data = $rec->fetch(PDO::FETCH_ASSOC)) {
 		$pseudo_list =$return_array[1];
 		$last_pseudo_index = $return_array[2];
 	}
-*/
+	 */
 	$csv->newrow();
 	if (preg_match("/_urls/", $sql) || preg_match("/_media/", $sql) || preg_match("/_mentions/", $sql))
 		$id = $data['tweet_id'];
@@ -238,7 +239,7 @@ while ($data = $rec->fetch(PDO::FETCH_ASSOC)) {
 $csv->close();
 
 
-save_pseudonymized_data($pseudo_list, $start_number, $last_pseudo_index);
+save_pseudonymized_data($GLOBALS['pseudo_list'], $GLOBALS['start_number'], $GLOBALS['last_pseudo_index']);
 
 // Display Script End time
 $time_end = microtime(true);
