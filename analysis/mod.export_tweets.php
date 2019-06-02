@@ -24,7 +24,7 @@ if (isset($_GET['random']) && $_GET['random'] == 1) {
 	$exportSettings[] = "1000";
 }
 if ((isset($_GET['location']) && $_GET['location'] == 1))
-	$module = "geoTweets";
+$module = "geoTweets";
 $filename = get_filename_for_export($module, implode("_", $exportSettings));
 $stream_to_open = export_start($filename, $outputformat);
 
@@ -50,6 +50,9 @@ if (array_search("hashtags", $exportSettings) !== false)
 $csv->writeheader(explode(',', $header));
 
 // make query
+
+$dataset = sql_maker($header, $esc['mysql']['dataset'], "_tweets");
+
 $sql = "SELECT * FROM " . $esc['mysql']['dataset'] . "_tweets t ";
 $where = "";
 if (isset($_GET['location']) && $_GET['location'] == 1)
@@ -73,19 +76,18 @@ $rec->execute();
 
 //$pseudo_list = array();
 $pseudo_list = fetch_pseudonymized_data();
-if(is_array($pseudo_list)){
-	$last_pseudo_index = $start_number = count($GLOBALS['pseudo_list']);
-} else {
-	// Dirty
-	$send_text = $execution_time;
-	$file = 'notarr.txt';
-	$file_put_contents($file, $send_text);
-}
+
+//if(is_array($pseudo_list)){
+//	$last_pseudo_index = $start_number = count($GLOBALS['pseudo_list']);
+//} else {
+//	// Dirty
+//	$send_text = $execution_time;
+//	$file = 'notarr.txt';
+//	$file_put_contents($file, $send_text);
+//}
+
 while ($data = $rec->fetch(PDO::FETCH_ASSOC)) {
 	array_walk($data, 'pseudonymize');
-	//$send_text = serialize($array_array);//serialize(array_merge(array_flip($data), $empty_arr  ));
-	//$file = 'combine.txt';
-	//file_put_contents($file, $send_text);
 
 	// Use that boolean value to determine whether we should send the fetched dataparts to the function pseudonymized.
 	/*'if ($pseudonymized_bool == 1) {
@@ -239,7 +241,7 @@ while ($data = $rec->fetch(PDO::FETCH_ASSOC)) {
 $csv->close();
 
 
-save_pseudonymized_data($GLOBALS['pseudo_list'], $GLOBALS['start_number'], $GLOBALS['last_pseudo_index']);
+//save_pseudonymized_data($GLOBALS['pseudo_list'], $GLOBALS['start_number'], $GLOBALS['last_pseudo_index']);
 
 // Display Script End time
 $time_end = microtime(true);

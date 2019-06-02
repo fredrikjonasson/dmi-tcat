@@ -3,13 +3,68 @@ require_once __DIR__ . '/functions.php';
 
 
 
-function sql () {
+function sql_maker ($header, $dataset, $table) {
+
 	$dbh = pdo_connect();
-	$sql = "INSERT INTO tcat_pseudonymized_data(original_data, fieldtype) SELECT from_user_name, 'id' FROM pseudotrack_tweets;";
-	$sql = "UPDATE pseudotrack_tweets PT, tcat_pseudonymized_data TD SET PT.from_user_name = CAST(TD.pseudo_val AS CHAR) WHERE PT.from_user_name = TD.original_data;";
-	$rec = $dbh->prepare($sql);
-	$rec->execute();
+	$key_array =array('location','username','user','id','tweetid','id_string','from_user_id','from_user_name','from_user_realname','user_from_name','user_from_id','user_to_id','user_to_name','to_user','to_user_id','to_user_name','in_reply_to_status_id','in_reply_to_status_id_str','in_reply_to_user_id','in_reply_to_screen_name','quoted_status_id','retweeted_status','retweeted','retweet_id');
+	$n = sizeof($key_array);
+	$column_array = explode(",", $header);
+	$array_for_sql = array();
+	$pseudonymized_columns = array();
+
+	try{
+		$copy_table_sql = "CREATE TABLE IF NOT EXISTS ".$dataset."".$table."_TMP SELECT * FROM ".$dataset."".$table.";";
+		$rec = $dbh->prepare($copy_table_sql);
+		$rec->execute(); 
+	} catch (Exception $e){
+		Die("Error when querying". $copy_table_sql ."pseudonymized data to database");
+	}
+
+	for ($i=0; $i < $n; $i++) { 
+		if((in_array($column_array[$i], $key_array)) !== FALSE){
+			$result_string = "'" . str_replace(",", "','", $column_array[$i] . "'");
+			array_push($pseudonymized_columns, $column_array[$i]);
+			try{
+				$save_to_pseudonymize_sql = "INSERT IGNORE INTO tcat_pseudonymized_data(original_data, fieldtype) SELECT ". $column_array[$i] .", ".$result_string." FROM ".$dataset."".$table.";";
+				$rec = $dbh->prepare($save_to_pseudonymize_sql);
+				$rec->execute(); 
+			}
+			catch (Exception $e){
+				Die("Error when saving". $save_to_pseudonymize_sql ."pseudonymized data to database");
+			}
+		}		
+	}
+
+
+	$no_pzeudonymized_columns=count($pseudonymized_columns);
+	$send_text = serialize($pseudonymized_columns);
+	$file = 'nocol.txt';
+	file_put_contents($file, $send_text);
+
+	for ($i=0; $i < $no_pzeudonymized_columns; $i++) { 
+		try{
+			$prepare_pseudonymized_table_sql = "UPDATE ".$dataset."".$table."_TMP FT, tcat_pseudonymized_data ST SET FT.".$pseudonymized_columns[$i]." = ST.pseudo_val WHERE FT.".$pseudonymized_columns[$i]."= ST.original_data;";
+
+			$send_text = serialize($prepare_pseudonymized_table_sql);
+			$file = 'pseudoQ.txt';
+			file_put_contents($file, $send_text, FILE_APPEND);
+
+			$rec = $dbh->prepare($prepare_pseudonymized_table_sql);
+			$rec->execute();
+		}
+		catch (Exception $e){
+			Die("Error when saving". $save_to_pseudonymize_sql ."pseudonymized data to database");
+		}
+	}		
 }
+
+
+
+//	$sql = "UPDATE pseudotrack_tweets PT, tcat_pseudonymized_data TD SET PT.from_user_name = CAST(TD.pseudo_val AS CHAR) WHERE PT.from_user_name = TD.original_data;";
+	//$rec = $dbh->prepare($sql);
+	//$rec->execute();
+
+
 /**
  * Fetch the data needed for de-pseudonymization from the database, and save it to a multidimensional array. 
  *
@@ -117,9 +172,9 @@ function pseudonymize(&$value, $key) {
 	$global_last_pseudo_index = $GLOBALS['last_pseudo_index'];
 	$global_pseudo_list = $GLOBALS['pseudo_list'];
 	//$key_array = array('location' => 1,'username' => 1,'user' =>2 , 'id' =>3 , 'tweetid' => 4, 'id_string'=>1, 'from_user_id'=>1, 'from_user_name'=>1, 'from_user_realname'=>1, 'user_from_name'=>1, 'user_from_id'=>1, 'user_to_id'=>1, 'user_to_name'=>1, 'to_user'=>1, 'to_user_id'=>1, 'to_user_name'=>1, 'in_reply_to_status_id'=>1, 'in_reply_to_status_id_str'=>1, 'in_reply_to_user_id'=>1, 'in_reply_to_screen_name'=>1, 'quoted_status_id'=>1, 'retweeted_status'=>1, 'retweeted'=>1, 'retweet_id'=>1);
-
+	$key_array = array('from_user_id' => 1);
 	if($value != NULL) {
-		//if(isset(($key_array[$key]))) {			
+		if(isset(($key_array[$key]))) {			
 			$mask = FALSE;
 			/*for ($i=1; $i <= $global_last_pseudo_index; $i++) {
 				if ($value == $global_pseudo_list[$i][0]) { 
@@ -130,14 +185,14 @@ function pseudonymize(&$value, $key) {
 			if ($mask !== FALSE) {
 				$value = $mask;
 			} else {*/ 
-			$global_pseudo_list[$global_last_pseudo_index+1] = array($value, $key);
-			$value = $global_last_pseudo_index + 1;
-			$global_last_pseudo_index = $global_last_pseudo_index + 1;
-		
-		$GLOBALS['last_pseudo_index'] = $global_last_pseudo_index;
-		$GLOBALS['pseudo_list'] = $global_pseudo_list;
+				$global_pseudo_list[$global_last_pseudo_index+1] = array($value, $key);
+				$value = $global_last_pseudo_index + 1;
+				$global_last_pseudo_index = $global_last_pseudo_index + 1;
 
-	}		
+				$GLOBALS['last_pseudo_index'] = $global_last_pseudo_index;
+				$GLOBALS['pseudo_list'] = $global_pseudo_list;
+
+			}		
 		/*if (($key == 'text')) {
 			// Dirty
 			$send_text = $value;
@@ -170,9 +225,10 @@ function pseudonymize(&$value, $key) {
 				}
 			}
 		}
-		}*/
+	}*/
 	//$GLOBALS['last_pseudo_index'] = $global_last_pseudo_index;
 	//$GLOBALS['pseudo_list'] = $global_pseudo_list;
+}
 }
 
 /**
