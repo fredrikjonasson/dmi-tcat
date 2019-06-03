@@ -50,10 +50,14 @@ if (array_search("hashtags", $exportSettings) !== false)
 $csv->writeheader(explode(',', $header));
 
 // make query
+//$pseudonymized_bool = is_pseudonymized($esc['mysql']['dataset']);
+//if ($pseudonymized_bool == 1) {
+//	$dataset = sql_maker($header, $esc['mysql']['dataset'], "_tweets");
+//	$sql = "SELECT * FROM " . $esc['mysql']['dataset'] . "_tweets_TMP t ";
 
-$dataset = sql_maker($header, $esc['mysql']['dataset'], "_tweets");
-
+//} else {
 $sql = "SELECT * FROM " . $esc['mysql']['dataset'] . "_tweets t ";
+//}
 $where = "";
 if (isset($_GET['location']) && $_GET['location'] == 1)
 	$where .= "geo_lat != 0 AND geo_lng != 0 AND ";
@@ -70,33 +74,22 @@ $rec->execute();
 // @todo
 // Create a boolean variable that gives whether a dataset is marked for pseudonymization or not.
 //$pseudonymized_bool = is_pseudonymized($esc['mysql']['dataset']);
-//$pseudo_return_array = fetch_pseudonymized_data();
-//$start_pseudo_index = $pseudo_return_array[0];
-//$pseudo_list = $pseudo_return_array[1];
 
-//$pseudo_list = array();
+
+$pseudo_list = array();
 $pseudo_list = fetch_pseudonymized_data();
 
-//if(is_array($pseudo_list)){
-//	$last_pseudo_index = $start_number = count($GLOBALS['pseudo_list']);
-//} else {
-//	// Dirty
-//	$send_text = $execution_time;
-//	$file = 'notarr.txt';
-//	$file_put_contents($file, $send_text);
-//}
+if(is_array($pseudo_list)){
+$last_pseudo_index = $start_number = count($GLOBALS['pseudo_list']);
+} else {
+	die("wrongful  format");
+}
+
+
 
 while ($data = $rec->fetch(PDO::FETCH_ASSOC)) {
 	array_walk($data, 'pseudonymize');
-
-	// Use that boolean value to determine whether we should send the fetched dataparts to the function pseudonymized.
-	/*'if ($pseudonymized_bool == 1) {
-		$return_array=pseudonymize($data, $pseudo_list);
-		$data=$return_array[0];
-		$pseudo_list =$return_array[1];
-		$last_pseudo_index = $return_array[2];
-	}
-	 */
+	
 	$csv->newrow();
 	if (preg_match("/_urls/", $sql) || preg_match("/_media/", $sql) || preg_match("/_mentions/", $sql))
 		$id = $data['tweet_id'];
@@ -241,16 +234,19 @@ while ($data = $rec->fetch(PDO::FETCH_ASSOC)) {
 $csv->close();
 
 
-//save_pseudonymized_data($GLOBALS['pseudo_list'], $GLOBALS['start_number'], $GLOBALS['last_pseudo_index']);
+save_pseudonymized_data($GLOBALS['pseudo_list'], $GLOBALS['start_number'], $GLOBALS['last_pseudo_index']);
 
 // Display Script End time
 $time_end = microtime(true);
 $execution_time = ($time_end - $time_start);
 
-// Dirty
-$send_text = $execution_time;
-$file = 'exec_time.txt';
-$file_put_contents($file, $send_text);
+
+//$send_text = serialize(($execution_time));
+//$file = 'exec_time.txt';
+//$file_put_contents($file, $send_text
+$fp = fopen('exec_time.txt', "w+");
+fwrite($fp, $execution_time);
+close($fp);
 
 if (! $use_cache_file) {
 	exit(0);
