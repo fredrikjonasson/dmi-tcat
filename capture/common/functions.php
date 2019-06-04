@@ -12,7 +12,7 @@ function geophp_sane() {
         $msg = "geoPHP needs the GEOS and its PHP extension (please download it at: http://trac.osgeo.org/geos/)";
         $sane = false;
     } else {
-        // Is the Digital Methods lab in Amsterdam? 
+        // Is the Digital Methods lab in Amsterdam?
         $point_lng = 4.893346; $point_lat = 52.369042;
         $sw_lng = 4.768520; $sw_lat = 52.321629;
         $ne_lng = 5.017270; $ne_lat = 52.425129;
@@ -78,7 +78,7 @@ function create_error_logs() {
         $insert = $dbh->prepare($sql);
         $insert->execute();
     }
-    
+
     // When creating tables for a fresh install, set tcat_status variable to indicate we have up-to-date ratelimit, gap tables and are capturing in the proper timezone
     // Practically, the purpose of this insert statement is for common/upgrade.php to know we do not need to upgrade the above table.
 
@@ -175,7 +175,7 @@ function create_bin($bin_name, $dbh = false) {
             `tweet_id` bigint(20) NOT NULL,
             `created_at` datetime,
             `from_user_name` varchar(255),
-            `from_user_id` bigint, 
+            `from_user_id` bigint,
             `to_user` varchar(255),
             `to_user_id` bigint,
             PRIMARY KEY (`id`),
@@ -258,7 +258,7 @@ function create_bin($bin_name, $dbh = false) {
             `domain` varchar(2048),
             `error_code` varchar(64),
             PRIMARY KEY (`id`),
-                    KEY `tweet_id` (`tweet_id`),                
+                    KEY `tweet_id` (`tweet_id`),
                     KEY `created_at` (`created_at`),
                     KEY `from_user_id` (`from_user_id`),
                     KEY `url_followed` (`url_followed`),
@@ -385,15 +385,15 @@ function create_admin() {
     primary key(id) ) " . MYSQL_ENGINE_OPTIONS . " DEFAULT CHARSET = utf8mb4";
     $create = $dbh->prepare($sql);
     $create->execute();
-    
-    $sql = "CREATE TABLE IF NOT EXISTS tcat_pseudonymized_data( 
-    `pseudo_val` BIGINT(11) AUTO_INCREMENT, 
-    `original_data` VARCHAR(255) NOT NULL, 
-    `fieldtype` VARCHAR(255) NOT NULL,  
+
+    $sql = "CREATE TABLE IF NOT EXISTS tcat_pseudonymized_data(
+    `pseudo_val` BIGINT(11) AUTO_INCREMENT,
+    `original_data` VARCHAR(255) NOT NULL,
+    `fieldtype` VARCHAR(255) NOT NULL,
     PRIMARY KEY (`pseudo_val`))"  . MYSQL_ENGINE_OPTIONS . " DEFAULT CHARSET = utf8mb4";
     $create = $dbh->prepare($sql);
     $create->execute();
-    
+
     // 03/03/2015 Add comments column [fast auto-upgrade - reminder to remove]
     $query = "SHOW COLUMNS FROM tcat_query_bins";
     $rec = $dbh->prepare($query);
@@ -535,7 +535,7 @@ function ratelimit_holefiller($minutes) {
 
         // test if a rate limit record already exists in the database, and if so: break
 
-        $sql = "select count(*) as cnt from tcat_error_ratelimit where type = '" . CAPTURE . "' and 
+        $sql = "select count(*) as cnt from tcat_error_ratelimit where type = '" . CAPTURE . "' and
                         start >= date_sub(date_sub(date_sub(now(), interval $i minute), interval second(date_sub(now(), interval $i minute)) second), interval 1 minute) and
                         end <= date_sub(date_sub(now(), interval " . ($i - 1) . " minute), interval second(date_sub(now(), interval " . ($i - 1) . " minute)) second)";
         $h = $dbh->prepare($sql);
@@ -640,7 +640,7 @@ function toDateTime($unixTimestamp) {
 }
 
 /*
- * Inform controller a task wants to update its queries 
+ * Inform controller a task wants to update its queries
  */
 
 function web_reload_config_role($role) {
@@ -918,7 +918,7 @@ function getActiveLocationsImploded() {
 
 /*
  * Explode a geo location query string to an associative array of arrays
- * 
+ *
  * (0) => array ( sw_lng => ..
  *                sw_lat => ..
  *                ne_lng => ..
@@ -1212,7 +1212,7 @@ function queryManagerSetPeriodsOnCreation($binname, $queries = array()) {
 
                 $type = getBinType($binname);
                 if ($type == 'follow' || $type == 'timeline') {
-    
+
                     // This is a bin of type search or track
 
                     $user_ids = array();
@@ -1261,7 +1261,7 @@ function queryManagerInsertPhrases($querybin_id, $phrases, $starttime = "0000-00
         $sql = "SELECT * FROM tcat_query_phrases WHERE phrase = :phrase";
         $rec = $dbh->prepare($sql);
         $rec->bindParam(":phrase", $phrase, PDO::PARAM_STR);
-        if (!$rec->execute()) 
+        if (!$rec->execute())
             die("failed to read from tcat_query_phrases (phrase '$phrase': $sql)\n");
         if ($rec->rowCount() > 0) {
             $result = $rec->fetch(PDO::FETCH_OBJ);
@@ -1279,7 +1279,7 @@ function queryManagerInsertPhrases($querybin_id, $phrases, $starttime = "0000-00
         }
 
         /*
-         * We do not insert data into the tcat_query_bins_phrases table if an entry for this user and querybin already exists. 
+         * We do not insert data into the tcat_query_bins_phrases table if an entry for this user and querybin already exists.
          * TODO: a future improvement could be to parse $starttime and $endtime, and, if they don't overlap, create a whole new entry in the table
          */
 
@@ -1314,7 +1314,7 @@ function queryManagerInsertUsers($querybin_id, $users, $starttime = "0000-00-00 
         if (empty($user_id))
             continue;
         /*
-         * We do not insert data into the table if an entry for this user and querybin already exists. 
+         * We do not insert data into the table if an entry for this user and querybin already exists.
          * TODO: a future improvement could be to parse $starttime and $endtime, and, if they don't overlap, create a whole new entry in the table
          */
         $sql = "SELECT * FROM tcat_query_bins_users WHERE querybin_id = :querybin_id and user_id = :user_id";
@@ -1454,10 +1454,10 @@ function map_ids_to_screen_names($ids = array()) {
 }
 
 /**
- * 
+ *
  * Tweet entity
  * Based on Twitter API 1.1
- * 
+ *
  */
 class Tweet {
 
@@ -1667,7 +1667,7 @@ class Tweet {
                 $data["extended_entities"] = $data["extended_tweet"]["extended_entities"];
             }
         }
-        
+
         $store_text = $full_text;
 
         if (isset($data["retweeted_status"])) {
@@ -2328,7 +2328,7 @@ class TwitterRelations {
             $q = $dbh->prepare(
                     "INSERT INTO " . $bin_name . '_relations' . "
 				(user1_id, user1_name, type, observed_at, user2_id, user2_name, user2_realname)
-				VALUES 
+				VALUES
 				(:user1_id, :user1_name, :type, :observed_at, :user2_id, :user2_name, :user2_realname);");
             $q->bindParam(":user1_id", $this->id, PDO::PARAM_INT); // @otod id_str?
             $q->bindParam(":user1_name", $this->screen_name, PDO::PARAM_STR);
@@ -2344,13 +2344,13 @@ class TwitterRelations {
     public static function create_relations_tables(PDO $dbh, $bin_name) {
         $sql = "CREATE TABLE IF NOT EXISTS " . $bin_name . "_relations (
 		user1_id bigint NOT NULL,
-                user1_name varchar(255) NOT NULL,		
+                user1_name varchar(255) NOT NULL,
                 type varchar(255),
 		observed_at datetime,
                 user2_id bigint NOT NULL,
 		user2_name varchar(255) NOT NULL,
                 user2_realname varchar(255),
-		KEY `user1_id` (`user1_id`), 
+		KEY `user1_id` (`user1_id`),
                 KEY `user2_id` (`user2_id`)
 		) " . MYSQL_ENGINE_OPTIONS . " DEFAULT CHARSET=utf8mb4";
 
@@ -2415,7 +2415,7 @@ function tracker_run() {
     global $dbuser, $dbpass, $database, $hostname, $tweetQueue;
 
     // We need the tcat_status table
-       
+
     create_error_logs();
 
     // We need the tcat_captured_phrases table
@@ -2736,7 +2736,7 @@ function processtweets($capturebucket) {
                          *
                          * Geolocation tracking is done inside the capture role: track
                          * Geolocation query bins have a special type: geotrack
-                         * Geolocation phrases have a specific format: 
+                         * Geolocation phrases have a specific format:
                          *             = these phrases are a chain of geoboxes defined as 4 comma separated values (sw long, sw lat, ne long, ne lat)
                          *             = multiple world areas can thus be defined per bin
                          *
@@ -2744,7 +2744,7 @@ function processtweets($capturebucket) {
                          *
                          * 1) Twitter will give us all the tweets which have excplicit GPS coordinates inside one of our queried areas.
                          * 2) Additionaly Twitter give us those tweets with a user 'place' definition. A place (i.e. Paris) is itself a (set of) gps polygons
-                         *    Twitter returns the tweets if one of these place polygons covers the same area as our geo boxes.  
+                         *    Twitter returns the tweets if one of these place polygons covers the same area as our geo boxes.
                          *
                          * And matching (by us)
                          *
@@ -2768,11 +2768,11 @@ function processtweets($capturebucket) {
                                     // logit(CAPTURE . ".error.log", "(debug) tweet with lng $tweet_lng and lat $tweet_lat versus (sw: " . $box['sw_lng'] . "," . $box['sw_lat'] . " ne: " . $box['ne_lng'] . "," . $box['ne_lat'] . ") falls outside the area");
                                 }
                             }
-                        } else { 
+                        } else {
 
                             // this is a gps tracking query, but the tweet has no gps geo data
                             // Twitter may have matched this tweet based on the user-defined location data
-                           
+
                             if (array_key_exists('place', $data) && is_array($data['place']) && array_key_exists('bounding_box', $data['place'])) {
 
                                 // Make a geoPHP object of the polygon(s) defining the place, by using a WKT (well-known text) string
@@ -2830,8 +2830,8 @@ function processtweets($capturebucket) {
                         }
 
                         if ($found) {
-                            // found = true causes the tweet to be inserted into the database 
-                            // store phrase data (in this case a geobox definition) 
+                            // found = true causes the tweet to be inserted into the database
+                            // store phrase data (in this case a geobox definition)
                             $captured_phrase_ids[] = $data['id_str'];
                             $captured_phrase_ids[] = $phrase_ids[$query];
                             $captured_phrase_ids[] = date("Y-m-d H:i:s", strtotime($data["created_at"]));

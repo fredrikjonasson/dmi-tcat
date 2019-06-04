@@ -76,20 +76,120 @@ $rec->execute();
 //$pseudonymized_bool = is_pseudonymized($esc['mysql']['dataset']);
 
 
-$pseudo_list = array();
-$pseudo_list = fetch_pseudonymized_data();
 
-if(is_array($pseudo_list)){
-$last_pseudo_index = $start_number = count($GLOBALS['pseudo_list']);
-} else {
-	die("wrongful  format");
+//if(is_arra0y($pseudo_list)){
+//$last_pseudo_index = $start_number = count($GLOBALS['pseudo_list']);
+//} else {
+//	die("wrongful  format");
+//}
+$pseudo_list2 = array();
+$pseudo_list2 = fetch_pseudonymized_data();
+
+if ($pseudo_list2 != NULL)
+{
+  $start_index = $last_index = count($pseudo_list2);
+
+	$pp = $pseudo_list2;
+}
+else {
+	$start_index = $last_index = 0;
+	$pp = array();
 }
 
+$keyarray = array('location' => 1,'username' => 1,'user' =>2 , 'id' =>3 , 'tweetid' => 4, 'id_string'=>1, 'from_user_id'=>1, 'from_user_name'=>1, 'from_user_realname'=>1, 'user_from_name'=>1, 'user_from_id'=>1, 'user_to_id'=>1, 'user_to_name'=>1, 'to_user'=>1, 'to_user_id'=>1, 'to_user_name'=>1, 'in_reply_to_status_id'=>1, 'in_reply_to_status_id_str'=>1, 'in_reply_to_user_id'=>1, 'in_reply_to_screen_name'=>1, 'quoted_status_id'=>1, 'retweeted_status'=>1, 'retweeted'=>1, 'retweet_id'=>1);
 
 
-while ($data = $rec->fetch(PDO::FETCH_ASSOC)) {
-	array_walk($data, 'pseudonymize');
-	
+while ($data = $rec -> fetch(PDO::FETCH_ASSOC)) {
+	//array_walk($data, 'pseudonymize');
+	$res  = pseudonymize($data, $pp);
+	$data = $res[0];
+	$last_index = $res[1];
+	$pseudo_list6 = array_merge($pp, $res[2]);
+	$pp = $pseudo_list6;
+
+	//$data=$return_array['data'];
+	//$pseudo_list = $return_array['pseudo_list'];
+	//$last_index = $return_array['last_index'];
+
+
+
+	/*
+
+	if ($data['location']) {
+
+	}
+	if ($data['username']) {
+		// code...
+	}
+	if ($data['user']) {
+		// code...
+	}
+	if ($data['tweetid']) {
+		// code...
+	}
+	if ($data['id_string']) {
+		// code...
+	}
+	if ($data['from_user_id']) {
+		// code...
+	}
+	if ($data['from_user_name']) {
+		// code...
+	}
+	if ($data['from_user_realname']) {
+		// code...
+	}
+	if ($data['user_from_name']) {
+		// code...
+	}
+	if ($data['user_from_id']) {
+		// code...
+	}
+	if ($data['user_to_id']) {
+		// code...
+	}
+	if ($data['user_to_name']) {
+		// code...
+	}
+	if ($data['to_user']) {
+		// code...
+	}
+	if ($data['to_user']) {
+		// code...
+	}
+	if ($data['to_user_id']) {
+		// code...
+	}
+	if ($data['to_user_name']) {
+		// code...
+	}
+	if ($data['in_reply_to_status_id']) {
+		// code...
+	}
+	if ($data['in_reply_to_status_id_str']) {
+		// code...
+	}
+	if ($data['in_reply_to_user_id']) {
+		// code...
+	}
+	if ($data['in_reply_to_screen_name']) {
+		// code...
+	}
+	if ($data['quoted_status_id']) {
+		// code...
+	}
+	if ($data['retweeted_status']) {
+		// code...
+	}
+	if ($data['retweeted']) {
+		// code...
+	}
+	if ($data['retweet_id']) {
+		// code...
+	}
+
+*/
+
 	$csv->newrow();
 	if (preg_match("/_urls/", $sql) || preg_match("/_media/", $sql) || preg_match("/_mentions/", $sql))
 		$id = $data['tweet_id'];
@@ -234,7 +334,7 @@ while ($data = $rec->fetch(PDO::FETCH_ASSOC)) {
 $csv->close();
 
 
-save_pseudonymized_data($GLOBALS['pseudo_list'], $GLOBALS['start_number'], $GLOBALS['last_pseudo_index']);
+save_pseudonymized_data($pseudo_list, $start_index, $last_index);
 
 // Display Script End time
 $time_end = microtime(true);
