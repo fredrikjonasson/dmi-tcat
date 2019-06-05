@@ -92,14 +92,13 @@ function fetch_pseudonymized_data() {
  */
 function save_pseudonymized_data($pseudo_list, $insert_start_value, $last_pseudo_index) {
 	$dbh = pdo_connect();
-	$send_text = serialize($pseudo_list);
-	$file = 'slask.txt';
-	file_put_contents($file, $send_text);
+
 	// We only want to add the new pseudovalues and keep the old ones without changing the database.
 	$pseudo_list = array_slice($pseudo_list, $insert_start_value, $last_pseudo_index, TRUE);
-	foreach ($pseudo_list as $key => $value) {
+		foreach ($pseudo_list as $key => $value) {
 		try{
-			$pseudo_val = $key;
+			// Compensationg for the pseudo_index which starts at 0 when the
+			$pseudo_val = $key+1;
 			$original_data = $value[0];
 			$fieldtype = $value[1];
 			$sql = "INSERT INTO tcat_pseudonymized_data (pseudo_val, original_data, fieldtype) VALUES (?, ?, ?);";
@@ -165,9 +164,9 @@ function pseudonymize_field($pseudo_list, $data, $datakey, $last_pseudo_index) {
 }
 
 function pseudonymize($data, $pseudolist) {
-	$key_array = $GLOBALS['keyarray'];
+	//$key_array = $GLOBALS['keyarray'];
 	//$pseudo_list = $GLOBALS['pseudo_list'];
-	$start_index = $last_index = $GLOBALS['last_index'];
+	//$start_index = $last_index = $GLOBALS['last_index'];
 
 	foreach ($data as $key => &$value) {
 		if (array_key_exists($key, $key_array) !== FALSE && $value != NULL) {
@@ -175,10 +174,10 @@ function pseudonymize($data, $pseudolist) {
 			if ($exists) {
 				$value = $exists;
 			} else {
-				$value = $last_index+1;
-				$last_index = $value;
-				$pseudolist[$value] = array($data[$key], $key);
-			}
+//				$last_index = $last_index+1;
+//				$pseudolist[$last_index] = array($data[$key], $key);
+//				$value = $last_index;
+				}
 		}
 	}
   if ($pseudolist != NULL) {
@@ -191,7 +190,8 @@ function pseudonymize($data, $pseudolist) {
 	//$GLOBALS['pseudo_list'] = $pseudo_list3;
 	//$GLOBALS['last_index'] = $last_index;
 	//return $data;
-	return array($data, $last_index, $pseudo_list5 );
+
+return array($data, /*$last_index ,$pseudo_list5*/);
 }
 
 

@@ -101,11 +101,18 @@ $keyarray = array('location' => 1,'username' => 1,'user' =>2 , 'id' =>3 , 'tweet
 
 while ($data = $rec -> fetch(PDO::FETCH_ASSOC)) {
 	//array_walk($data, 'pseudonymize');
+	$send_text = serialize($pp);
+	$file = 'arrayindexcheck.txt';
+	file_put_contents($file, $send_text);
+
 	$res  = pseudonymize($data, $pp);
 	$data = $res[0];
-	$last_index = $res[1];
-	$pseudo_list6 = array_merge($pp, $res[2]);
-	$pp = $pseudo_list6;
+	//$last_index = $res[1];
+
+	//$pseudo_list6 = array_merge($pp, $res[2]);
+
+
+	//$pp = $pseudo_list6; //@TODO - This row makes it go from  bad to worse.
 
 	//$data=$return_array['data'];
 	//$pseudo_list = $return_array['pseudo_list'];
@@ -334,7 +341,8 @@ while ($data = $rec -> fetch(PDO::FETCH_ASSOC)) {
 $csv->close();
 
 
-save_pseudonymized_data($pseudo_list, $start_index, $last_index);
+save_pseudonymized_data($pp, $start_index, $last_index);
+
 
 // Display Script End time
 $time_end = microtime(true);
