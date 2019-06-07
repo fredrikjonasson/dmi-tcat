@@ -164,9 +164,9 @@ function pseudonymize_field($pseudo_list, $data, $datakey, $last_pseudo_index) {
 }
 
 function pseudonymize($data, $pseudolist) {
-	//$key_array = $GLOBALS['keyarray'];
+	$key_array = $GLOBALS['keyarray'];
 	//$pseudo_list = $GLOBALS['pseudo_list'];
-	//$start_index = $last_index = $GLOBALS['last_index'];
+	$start_index = $last_index = $GLOBALS['last_index'];
 
 	foreach ($data as $key => &$value) {
 		if (array_key_exists($key, $key_array) !== FALSE && $value != NULL) {
@@ -174,9 +174,9 @@ function pseudonymize($data, $pseudolist) {
 			if ($exists) {
 				$value = $exists;
 			} else {
-//				$last_index = $last_index+1;
-//				$pseudolist[$last_index] = array($data[$key], $key);
-//				$value = $last_index;
+				$last_index = $last_index+1;
+				$pseudolist[$last_index] = array($data[$key], $key);
+				$value = $last_index;
 				}
 		}
 	}
@@ -191,7 +191,7 @@ function pseudonymize($data, $pseudolist) {
 	//$GLOBALS['last_index'] = $last_index;
 	//return $data;
 
-return array($data, /*$last_index ,$pseudo_list5*/);
+return array($data, $last_index ,$pseudo_list5);
 }
 
 

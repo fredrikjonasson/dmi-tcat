@@ -107,12 +107,12 @@ while ($data = $rec -> fetch(PDO::FETCH_ASSOC)) {
 
 	$res  = pseudonymize($data, $pp);
 	$data = $res[0];
-	//$last_index = $res[1];
+	$last_index = $res[1];
 
-	//$pseudo_list6 = array_merge($pp, $res[2]);
+	$pseudo_list6 = array_merge($pp, $res[2]);
 
 
-	//$pp = $pseudo_list6; //@TODO - This row makes it go from  bad to worse.
+	$pp = $pseudo_list6; //@TODO - This row makes it go from  bad to worse.
 
 	//$data=$return_array['data'];
 	//$pseudo_list = $return_array['pseudo_list'];
@@ -352,9 +352,9 @@ $execution_time = ($time_end - $time_start);
 //$send_text = serialize(($execution_time));
 //$file = 'exec_time.txt';
 //$file_put_contents($file, $send_text
-$fp = fopen('exec_time.txt', "w+");
-fwrite($fp, $execution_time);
-close($fp);
+//$fp = fopen('exec_time.txt', "w+");
+//fwrite($fp, $execution_time);
+//close($fp);
 
 if (! $use_cache_file) {
 	exit(0);
